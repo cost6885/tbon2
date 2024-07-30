@@ -46,6 +46,35 @@
             padding: 20px;
             border-radius: 10px;
         }
+        #rankingBoard {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 10px;
+        }
+        #rankingBoard h2 {
+            margin: 0 0 10px;
+            font-size: 18px;
+            color: #333;
+        }
+        .rank {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .rank:last-child {
+            border-bottom: none;
+        }
+        .rank .name {
+            font-weight: bold;
+            color: #555;
+        }
+        .rank .time {
+            color: #999;
+        }
     </style>
 </head>
 <body>
@@ -58,8 +87,10 @@
     <canvas id="gameCanvas" width="640" height="800"></canvas>
     <div id="startMessage">스페이스바를 눌러서 다시 시작</div>
     <div id="message">성공!</div>
+    <div id="rankingBoard">
+        <h2>Ranking Board</h2>
+    </div>
     <script>
-        // 전역 변수 정의
         var canvas, ctx, ballRadius, x, y, dx, dy, paddleHeight, paddleWidth, paddleX, rightPressed, leftPressed;
         var brickRowCount, brickColumnCount, brickWidth, brickHeight, brickPadding, brickOffsetTop, brickOffsetLeft;
         var imageX, imageY, imageWidth, imageHeight, successMessageShown, bricks, score, gameStarted;
@@ -118,6 +149,7 @@
             });
 
             initGame();
+            displayRankingBoard();
         });
 
         function initGame() {
@@ -168,7 +200,8 @@
         }
 
         function drawSuccessMessage() {
-            console.log("Drawing success message...");
+            console.log("Drawing success message
+            ...");
             imageX = (canvas.width - imageWidth) / 2;
             imageY = (canvas.height - imageHeight) / 2;
             ctx.drawImage(image, imageX, imageY, imageWidth, imageHeight);
@@ -182,11 +215,14 @@
             elapsedTime = Math.floor((endTime - startTime) / 1000);
             localStorage.setItem("elapsedTime", elapsedTime);
 
-            // Send data to Google Sheets
-            sendDataToGoogleSheets();
+            // Send data to server
+            sendDataToServer();
 
             successMessageShown = true;
             console.log("Success message drawn.");
+
+            // Update and display the ranking board
+            displayRankingBoard();
         }
 
         function drawBall() {
@@ -199,8 +235,7 @@
 
         function drawPaddle() {
             console.log("Drawing paddle at x:", paddleX);
-            ctx.drawImage(paddleImage, paddleX, canvas.height - paddleHeight - 
-10, paddleWidth, paddleHeight);
+            ctx.drawImage(paddleImage, paddleX, canvas.height - paddleHeight - 10, paddleWidth, paddleHeight);
         }
 
         function drawBricks() {
@@ -356,6 +391,57 @@
                 console.error('Error:', error);
             });
         }
+
+        function sendDataToServer() {
+            var company = localStorage.getItem("company");
+            var employeeId = localStorage.getItem("employeeId");
+            var name = localStorage.getItem("name");
+            var elapsedTime = localStorage.getItem("elapsedTime");
+
+            var data = {
+                company: company,
+                employeeId: employeeId,
+                name: name,
+                elapsedTime: parseInt(elapsedTime, 10)
+            };
+
+            fetch('http://localhost:3000/rankings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then(response => {
+                if (response.ok) {
+                    console.log('Data sent to server successfully.');
+                } else {
+                    console.error('Error sending data to server.');
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        }
+       
+        function displayRankingBoard() {
+            fetch('http://172.25.1.48:3000/rankings')
+                .then(response => response.json())
+                .then(data => {
+                    var rankingBoard = document.getElementById("rankingBoard");
+                    rankingBoard.innerHTML = "<h2>Ranking Board</h2>";
+                    data.forEach((entry, index) => {
+                        var entryElement = document.createElement("div");
+                        entryElement.className = "rank";
+                        entryElement.innerHTML = `<span class="name">${index + 1}. ${entry.name}</span><span class="time">${entry.elapsedTime} seconds</span>`;
+                        rankingBoard.appendChild(entryElement);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error
+                    console.error('Error:', error);
+                });
+        }
+
+        initGame();
     </script>
 </body>
 </html>
