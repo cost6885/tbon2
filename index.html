@@ -46,35 +46,6 @@
             padding: 20px;
             border-radius: 10px;
         }
-        #rankingBoard {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 10px;
-            border-radius: 10px;
-        }
-        #rankingBoard h2 {
-            margin: 0 0 10px;
-            font-size: 18px;
-            color: #333;
-        }
-        .rank {
-            display: flex;
-            justify-content: space-between;
-            padding: 5px 0;
-            border-bottom: 1px solid #ddd;
-        }
-        .rank:last-child {
-            border-bottom: none;
-        }
-        .rank .name {
-            font-weight: bold;
-            color: #555;
-        }
-        .rank .time {
-            color: #999;
-        }
     </style>
 </head>
 <body>
@@ -87,10 +58,8 @@
     <canvas id="gameCanvas" width="640" height="800"></canvas>
     <div id="startMessage">스페이스바를 눌러서 다시 시작</div>
     <div id="message">성공!</div>
-    <div id="rankingBoard">
-        <h2>Ranking Board</h2>
-    </div>
     <script>
+        // 전역 변수 정의
         var canvas, ctx, ballRadius, x, y, dx, dy, paddleHeight, paddleWidth, paddleX, rightPressed, leftPressed;
         var brickRowCount, brickColumnCount, brickWidth, brickHeight, brickPadding, brickOffsetTop, brickOffsetLeft;
         var imageX, imageY, imageWidth, imageHeight, successMessageShown, bricks, score, gameStarted;
@@ -149,7 +118,6 @@
             });
 
             initGame();
-            displayRankingBoard();
         });
 
         function initGame() {
@@ -200,8 +168,7 @@
         }
 
         function drawSuccessMessage() {
-            console.log("Drawing success message
-            ...");
+            console.log("Drawing success message...");
             imageX = (canvas.width - imageWidth) / 2;
             imageY = (canvas.height - imageHeight) / 2;
             ctx.drawImage(image, imageX, imageY, imageWidth, imageHeight);
@@ -215,14 +182,11 @@
             elapsedTime = Math.floor((endTime - startTime) / 1000);
             localStorage.setItem("elapsedTime", elapsedTime);
 
-            // Send data to server
+            // Send data to Google Sheets
             sendDataToServer();
 
             successMessageShown = true;
             console.log("Success message drawn.");
-
-            // Update and display the ranking board
-            displayRankingBoard();
         }
 
         function drawBall() {
@@ -247,7 +211,8 @@
                         bricks[c][r].x = brickX;
                         bricks[c][r].y = brickY;
                         console.log("Drawing brick at x:", brickX, "y:", brickY);
-                        ctx.drawImage(brickImage, brickX, brickY, brickWidth, brickHeight);
+                        ctx.drawImage(brickImage, brickX, brickY,
+brickHeight);
                     }
                 }
             }
@@ -360,38 +325,6 @@
             }
         }
 
-        function sendDataToGoogleSheets() {
-            var company = localStorage.getItem("company");
-            var employeeId = localStorage.getItem("employeeId");
-            var name = localStorage.getItem("name");
-            var elapsedTime = localStorage.getItem("elapsedTime");
-
-            var data = {
-                company: company,
-                employeeId: employeeId,
-                name: name,
-                elapsedTime: elapsedTime
-            };
-
-            // Replace 'YOUR_SCRIPT_URL' with the URL of your Google Apps Script
-            fetch('https://script.google.com/macros/s/AKfycbzf2jHdzEuzbBrYbEik9ZlUUCXEhaHQzOYsxbJ_vlLQJO1awUVbQFe6wI3nUtzp4Hrx6g/exec', {
-                method: 'POST',
-                mode: 'cors',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            }).then(response => {
-                if (response.ok) {
-                    console.log('Data sent to Google Sheets successfully.');
-                } else {
-                    console.error('Error sending data to Google Sheets.');
-                }
-            }).catch(error => {
-                console.error('Error:', error);
-            });
-        }
-
         function sendDataToServer() {
             var company = localStorage.getItem("company");
             var employeeId = localStorage.getItem("employeeId");
@@ -405,7 +338,7 @@
                 elapsedTime: parseInt(elapsedTime, 10)
             };
 
-            fetch('http://localhost:3000/rankings', {
+            fetch('http://3.149.234.125:3000/rankings', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -414,6 +347,7 @@
             }).then(response => {
                 if (response.ok) {
                     console.log('Data sent to server successfully.');
+                    displayRankingBoard(); // 랭킹보드 업데이트
                 } else {
                     console.error('Error sending data to server.');
                 }
@@ -421,7 +355,7 @@
                 console.error('Error:', error);
             });
         }
-       
+
         function displayRankingBoard() {
             fetch('http://3.149.234.125:3000/rankings')
                 .then(response => response.json())
@@ -436,12 +370,10 @@
                     });
                 })
                 .catch(error => {
-                    console.error('Error:', error
                     console.error('Error:', error);
                 });
         }
-
-        initGame();
     </script>
+    <div id="rankingBoard" style="display: none;"></div>
 </body>
 </html>
