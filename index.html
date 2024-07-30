@@ -5,9 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>벽돌깨기 게임</title>
     <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #ffd900;
+        }
         canvas {
-            display: block;
-            margin: 0 auto;
             background: #ffd900;
         }
         #message {
@@ -18,7 +25,7 @@
         #startMessage {
             text-align: center;
             font-size: 24px;
-            display: block;
+            display: none;
             position: absolute;
             top: 50%;
             left: 50%;
@@ -28,80 +35,97 @@
             padding: 20px;
             border-radius: 10px;
         }
+        #formContainer {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body>
-    <canvas id="gameCanvas" width="480" height="320">
-    </canvas>
-<!--         <div id="message">
-        <p id="successText" style="display: none;">성 공</p>
-        <img src="https://image.nongshim.com/non/pro/1698021079345.jpg" alt="빵부장" style="display: none; width: 200px;">
-            </div> -->
-
-    <div id="startMessage">스페이스바를 눌러서 시작</div>
+    <div id="formContainer">
+        <label>회사: <input type="text" id="company"></label><br>
+        <label>사번: <input type="text" id="employeeId"></label><br>
+        <label>이름: <input type="text" id="name"></label><br>
+        <button onclick="startGame()">게임 시작</button>
+    </div>
+    <canvas id="gameCanvas" width="640" height="800"></canvas>
+    <div id="startMessage">스페이스바를 눌러서 다시 시작</div>
+    <div id="message">성공!</div>
     <script>
-        var canvas = document.getElementById("gameCanvas");
-        var ctx = canvas.getContext("2d");
+        // 전역 변수 정의
+        var canvas, ctx, ballRadius, x, y, dx, dy, paddleHeight, paddleWidth, paddleX, rightPressed, leftPressed;
+        var brickRowCount, brickColumnCount, brickWidth, brickHeight, brickPadding, brickOffsetTop, brickOffsetLeft;
+        var imageX, imageY, imageWidth, imageHeight, successMessageShown, bricks, score, gameStarted;
+        var brickImage, image, ballImage, enlargedBallRadius, startTime, elapsedTime;
 
-        var ballRadius = 10;
-        var x, y, dx, dy;
+        document.addEventListener("DOMContentLoaded", function() {
+            canvas = document.getElementById("gameCanvas");
+            ctx = canvas.getContext("2d");
 
-        var paddleHeight = 15;
-        var paddleWidth = 80;
-        var paddleX;
+            ballRadius = 10;
+            paddleHeight = 15;
+            paddleWidth = 80;
 
-        var rightPressed = false;
-        var leftPressed = false;
+            rightPressed = false;
+            leftPressed = false;
 
-        var brickRowCount = 2;
-        var brickColumnCount = 5;
-        var brickWidth = 80;
-        var brickHeight = 30;
-        var brickPadding = 5;
-        var brickOffsetTop = 30;
-        var brickOffsetLeft = 30;
-        
-        var imageX, imageY, imageWidth = 200, imageHeight = 200;
-				var successMessageShown = false;
+            brickRowCount = 3;
+            brickColumnCount = 7;
+            brickWidth = 82;
+            brickHeight = 88;
+            brickPadding = 2;
+            brickOffsetTop = 30;
+            brickOffsetLeft = 30;
 
-        var bricks = [];
-        var score;
-        var gameStarted = false;
+            imageX = 0; imageY = 0; imageWidth = 200; imageHeight = 200;
+            successMessageShown = false;
+            bricks = [];
+            score = 0;
+            gameStarted = false;
 
-        var brickImage = new Image();
-        brickImage.src = "https://ssbr.kr/wp-content/uploads/2022/01/01-190-%EC%95%84%EC%9D%B4%EB%B3%B4%EB%A6%AC%ED%9B%84%EB%A0%88%EC%8B%B1-400x260.jpg";
+            brickImage = new Image();
+            brickImage.src = "https://i.namu.wiki/i/-huPOb649RKFj8RfnSK0O0k7OoTvxJMuTQfH2qgMobJGK_XXlzWDkOFnfxPj_O-JclHdvDy_I3w34fwjskZ5ew.webp";
 
-				var image = new Image();
-				image.src = "https://image.nongshim.com/non/pro/1698021079345.jpg";
+            image = new Image();
+            image.src = "https://image.nongshim.com/non/pro/1698021079345.jpg";
 
-				var ballImage = new Image();
-				ballImage.src = "https://www.hushwish.com/wp-content/uploads/2023/09/emot_guri013.gif";
+            ballImage = new Image();
+            ballImage.src = "https://www.hushwish.com/wp-content/uploads/2023/09/emot_guri013.gif";
 
-				var enlargedBallRadius = ballRadius * 5; // 이미지 크기 변경에 따라 반경 조정
+            enlargedBallRadius = ballRadius * 5; // 이미지 크기 변경에 따라 반경 조정
 
-				var startTime;
-        var elapsedTime = 0;
+            document.addEventListener("keydown", keyDownHandler, false);
+            document.addEventListener("keyup", keyUpHandler, false);
 
+            canvas.addEventListener("click", function(e) {
+                if (successMessageShown) {
+                    var rect = canvas.getBoundingClientRect();
+                    var clickX = e.clientX - rect.left;
+                    var clickY = e.clientY - rect.top;
 
-
-      	canvas.addEventListener("click", function(e) {
-            if (successMessageShown) {
-                var rect = canvas.getBoundingClientRect();
-                var clickX = e.clientX - rect.left;
-                var clickY = e.clientY - rect.top;
-
-                if (clickX >= imageX && clickX <= imageX + imageWidth &&
-                    clickY >= imageY && clickY <= imageY + imageHeight) {
-                    window.location.href = "https://forms.gle/Xp9Ze8THK1MVWx78A";
+                    if (clickX >= imageX && clickX <= imageX + imageWidth &&
+                        clickY >= imageY && clickY <= imageY + imageHeight) {
+                        window.location.href = "https://forms.gle/Xp9Ze8THK1MVWx78A";
+                    }
                 }
-            }
+            });
+
+            initGame();
         });
 
         function initGame() {
+            console.log("Initializing game...");
             x = canvas.width / 2;
             y = canvas.height - paddleHeight - enlargedBallRadius; // 패들 위로 공의 초기 위치 설정
-            dx = 4;
-            dy = -4;
+            dx = 7;
+            dy = -7;
             paddleX = (canvas.width - paddleWidth) / 2;
 
             bricks = [];
@@ -114,23 +138,23 @@
 
             score = 0;
             document.getElementById("message").style.display = "none";
-            document.getElementById("startMessage").style.display = "block";
-            gameStarted = false;
+            document.getElementById("startMessage").style.display = "none";
+            gameStarted = false; // Ensure gameStarted is reset
             elapsedTime = 0;
+            console.log("Game initialized.");
         }
-
-        document.addEventListener("keydown", keyDownHandler, false);
-        document.addEventListener("keyup", keyUpHandler, false);
 
         function keyDownHandler(e) {
             if (e.key == "Right" || e.key == "ArrowRight") {
                 rightPressed = true;
             } else if (e.key == "Left" || e.key == "ArrowLeft") {
                 leftPressed = true;
-            } else if (e.key == " " && !gameStarted) {
+            } else if (e.key == " " && successMessageShown) {
                 document.getElementById("startMessage").style.display = "none";
+                initGame(); // 게임 초기화
                 gameStarted = true;
                 startTime = Date.now();  // 게임 시작 시간 기록
+                successMessageShown = false;
                 draw();
             }
         }
@@ -144,6 +168,7 @@
         }
 
         function drawSuccessMessage() {
+            console.log("Drawing success message...");
             imageX = (canvas.width - imageWidth) / 2;
             imageY = (canvas.height - imageHeight) / 2;
             ctx.drawImage(image, imageX, imageY, imageWidth, imageHeight);
@@ -151,22 +176,32 @@
             ctx.font = "24px Arial";
             ctx.textAlign = "center";
             ctx.fillText("성공! 이미지를 클릭하세요.", canvas.width / 2, imageY - 20);
+
+            // Calculate and store elapsed time
+            var endTime = Date.now();
+            elapsedTime = Math.floor((endTime - startTime) / 1000);
+            localStorage.setItem("elapsedTime", elapsedTime);
+
+            // Send data to Google Sheets
+            sendDataToGoogleSheets();
+
+            successMessageShown = true;
+            console.log("Success message drawn.");
         }
 
         function drawBall() {
+            console.log("Drawing ball at x:", x, "y:", y);
             ctx.drawImage(ballImage, x - enlargedBallRadius, y - enlargedBallRadius, enlargedBallRadius * 2, enlargedBallRadius * 2);
         }
 
-      	var paddleImage = new Image();	
+        var paddleImage = new Image();    
         paddleImage.src = "https://www.clker.com/cliparts/i/K/s/w/t/o/handbrake.svg";
 
-				var paddleHeight = 20;
-				var paddleWidth = 95;
-
         function drawPaddle() {
-            ctx.drawImage(paddleImage, paddleX, canvas.height - paddleHeight - 10, paddleWidth, paddleHeight);
+            console.log("Drawing paddle at x:", paddleX);
+            ctx.drawImage(paddleImage, paddleX, canvas.height - paddleHeight - 
+10, paddleWidth, paddleHeight);
         }
-
 
         function drawBricks() {
             for (var c = 0; c < brickColumnCount; c++) {
@@ -176,12 +211,13 @@
                         var brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
                         bricks[c][r].x = brickX;
                         bricks[c][r].y = brickY;
+                        console.log("Drawing brick at x:", brickX, "y:", brickY);
                         ctx.drawImage(brickImage, brickX, brickY, brickWidth, brickHeight);
                     }
                 }
             }
         }
-        
+
         function drawElapsedTime() {
             if (gameStarted) {
                 elapsedTime = Math.floor((Date.now() - startTime) / 1000);
@@ -210,7 +246,6 @@
                             score++;
                             if (score == brickRowCount * brickColumnCount) {
                                 gameStarted = false;
-                                successMessageShown = true;
                                 drawSuccessMessage();
                             }
                         }
@@ -222,8 +257,31 @@
                 if (x > paddleX && x < paddleX + paddleWidth) {
                     dy = -dy;
                     y = canvas.height - paddleHeight - enlargedBallRadius; // 공의 위치를 패들 위로 조정
+                } else if (y + dy > canvas.height - enlargedBallRadius) {
+                    gameStarted = false;
+                    document.getElementById("startMessage").style.display = "block"; // 바닥에 닿으면 게임 종료
+                    successMessageShown = true;
+                    return;
                 }
             }
+        }
+
+        function startGame() {
+            document.getElementById("formContainer").style.display = "none";
+            document.getElementById("gameCanvas").style.display = "block";
+
+            // Store user input
+            var company = document.getElementById("company").value;
+            var employeeId = document.getElementById("employeeId").value;
+            var name = document.getElementById("name").value;
+            localStorage.setItem("company", company);
+            localStorage.setItem("employeeId", employeeId);
+            localStorage.setItem("name", name);
+
+            initGame();
+            gameStarted = true; // Ensure gameStarted is set to true
+            startTime = Date.now(); // Start the timer
+            draw(); // Start the game loop
         }
 
         function draw() {
@@ -248,7 +306,7 @@
                 } else {
                     gameStarted = false;
                     document.getElementById("startMessage").style.display = "block"; // 바닥에 닿으면 게임 종료
-                    initGame();
+                    successMessageShown = true;
                     return;
                 }
             }
@@ -267,8 +325,37 @@
             }
         }
 
+        function sendDataToGoogleSheets() {
+            var company = localStorage.getItem("company");
+            var employeeId = localStorage.getItem("employeeId");
+            var name = localStorage.getItem("name");
+            var elapsedTime = localStorage.getItem("elapsedTime");
 
-        initGame();
+            var data = {
+                company: company,
+                employeeId: employeeId,
+                name: name,
+                elapsedTime: elapsedTime
+            };
+
+            // Replace 'YOUR_SCRIPT_URL' with the URL of your Google Apps Script
+            fetch('https://script.google.com/macros/s/AKfycbzf2jHdzEuzbBrYbEik9ZlUUCXEhaHQzOYsxbJ_vlLQJO1awUVbQFe6wI3nUtzp4Hrx6g/exec', {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then(response => {
+                if (response.ok) {
+                    console.log('Data sent to Google Sheets successfully.');
+                } else {
+                    console.error('Error sending data to Google Sheets.');
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        }
     </script>
 </body>
 </html>
