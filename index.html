@@ -101,6 +101,11 @@
 
             enlargedBallRadius = ballRadius * 5; // 이미지 크기 변경에 따라 반경 조정
 
+            brickImage.onload = image.onload = ballImage.onload = function() {
+                console.log("All images loaded");
+                initGame();
+            };
+
             document.addEventListener("keydown", keyDownHandler, false);
             document.addEventListener("keyup", keyUpHandler, false);
 
@@ -116,8 +121,6 @@
                     }
                 }
             });
-
-            initGame();
         });
 
         function initGame() {
@@ -205,14 +208,14 @@
         function drawBricks() {
             for (var c = 0; c < brickColumnCount; c++) {
                 for (var r = 0; r < brickRowCount; r++) {
+                    if (bricks[c][r].
                     if (bricks[c][r].status == 1) {
                         var brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
                         var brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
                         bricks[c][r].x = brickX;
                         bricks[c][r].y = brickY;
                         console.log("Drawing brick at x:", brickX, "y:", brickY);
-                        ctx.drawImage(brickImage, brickX, brickY,
-brickHeight);
+                        ctx.drawImage(brickImage, brickX, brickY, brickWidth, brickHeight);
                     }
                 }
             }
@@ -361,6 +364,7 @@ brickHeight);
                 .then(response => response.json())
                 .then(data => {
                     var rankingBoard = document.getElementById("rankingBoard");
+                    rankingBoard.style.display = "block";
                     rankingBoard.innerHTML = "<h2>Ranking Board</h2>";
                     data.forEach((entry, index) => {
                         var entryElement = document.createElement("div");
