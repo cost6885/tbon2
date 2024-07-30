@@ -202,13 +202,13 @@
 
         function drawPaddle() {
             console.log("Drawing paddle at x:", paddleX);
-            ctx.drawImage(paddleImage, paddleX, canvas.height - paddleHeight - 10, paddleWidth, paddleHeight);
+            ctx.drawImage(paddleImage, paddleX, canvas.height - paddleHeight -
+            10, paddleWidth, paddleHeight);
         }
 
         function drawBricks() {
             for (var c = 0; c < brickColumnCount; c++) {
                 for (var r = 0; r < brickRowCount; r++) {
-                    if (bricks[c][r].
                     if (bricks[c][r].status == 1) {
                         var brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
                         var brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
