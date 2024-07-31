@@ -302,12 +302,12 @@
                     dy = -dy;
                     
                     // 패들의 양쪽 끝 부분(20%)에서만 각도 변경
-                    var leftEnd = paddleX + paddleWidth * 0.2;
-                    var rightEnd = paddleX + paddleWidth * 0.8;
+                    var leftEnd = paddleX + paddleWidth * 0.5;
+                    var rightEnd = paddleX + paddleWidth * 0.5;
                     
                     if (x < leftEnd || x > rightEnd) {
                         // 랜덤 각도 변경 (변화 범위를 -0.3에서 0.3으로 증가)
-                        var randAngle = (Math.random() - 0.5) * 0.6; // -0.3 to 0.3 범위의 랜덤값
+                        var randAngle = (Math.random() - 0.5) * 1; // -0.3 to 0.3 범위의 랜덤값
                         dx += randAngle;
                     }
                     
