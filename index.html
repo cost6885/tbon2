@@ -86,6 +86,7 @@
         <label>사번: <input type="text" id="employeeId"></label><br>
         <label>이름: <input type="text" id="name"></label><br>
         <button onclick="sendToGoogleSheets()">이벤트 응모하기</button>
+        <button onclick="restartGame()">다시하기</button>
     </div>
     <canvas id="gameCanvas" width="640" height="600"></canvas>
     <div id="startMessage">스페이스바를 눌러서 다시 시작</div>
@@ -179,6 +180,18 @@
             console.log("Game initialized.");
         }
 
+
+        function restartGame() {
+            document.getElementById("formContainer").style.display = "none";
+            document.getElementById("gameCanvas").style.display = "block";
+            document.getElementById("rankingBoard").style.display = "none";
+            document.getElementById("startMessage").style.display = "none";
+            initGame();
+            gameStarted = true;
+            startTime = Date.now();
+            draw();
+        }
+        
         function keyDownHandler(e) {
             if (e.key == "Right" || e.key == "ArrowRight") {
                 rightPressed = true;
@@ -376,45 +389,57 @@
                 company: company,
                 employeeId: employeeId,
                 name: name,
-                elapsedTime: parseFloat(elapsedTime) // Ensure it's a number
+                elapsedTime: parseFloat(elapsedTime)
             };
         
-            fetch('https://3.149.234.125:3000/rankings', {
+            fetch('http://3.149.234.125:3000/rankings', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(data)
-            }).then(response => {
-                if (response.ok) {
-                    console.log('Data sent to server successfully.');
-                    // Fetch and display ranking board after successfully sending data
-                    displayRankingBoard();
-                } else {
-                    console.error('Error sending data to server.');
-                }
+            }).then(response => response.json())
+            .then(data => {
+                console.log('Data sent to server successfully.');
+                displayRankingBoard(); // 서버 데이터로 랭킹보드 업데이트
             }).catch(error => {
-                console.error('Error:', error);
+                console.error('Error sending data to server, using local data instead.', error);
+                updateLocalRanking(data);
+                displayRankingBoard(); // 로컬 데이터로 랭킹보드 업데이트
             });
+        }
+
+        function updateLocalRanking(data) {
+            let rankings = JSON.parse(localStorage.getItem('rankings')) || [];
+            rankings.push(data);
+            rankings.sort((a, b) => a.elapsedTime - b.elapsedTime); // 오름차순 정렬
+            if (rankings.length > 10) rankings = rankings.slice(0, 10); // 상위 10개만 유지
+            localStorage.setItem('rankings', JSON.stringify(rankings));
         }
         
         function displayRankingBoard() {
-            fetch('https://3.149.234.125:3000/rankings')
+            fetch('http://3.149.234.125:3000/rankings')
                 .then(response => response.json())
                 .then(data => {
-                    var rankingBoard = document.getElementById("rankingBoard");
-                    rankingBoard.style.display = "block";
-                    rankingBoard.innerHTML = "<h2>Ranking Board</h2>";
-                    data.forEach((entry, index) => {
-                        var entryElement = document.createElement("div");
-                        entryElement.className = "rank";
-                        entryElement.innerHTML = `<span class="name">${index + 1}. ${entry.name}</span><span class="time">${entry.elapsedTime} seconds</span>`;
-                        rankingBoard.appendChild(entryElement);
-                    });
+                    updateRankingBoardUI(data);
                 })
                 .catch(error => {
-                    console.error('Error:', error);
+                    console.error('Error fetching server rankings, using local data instead.', error);
+                    let rankings = JSON.parse(localStorage.getItem('rankings')) || [];
+                    updateRankingBoardUI(rankings);
                 });
+        }
+
+        function updateRankingBoardUI(data) {
+            var rankingBoard = document.getElementById("rankingBoard");
+            rankingBoard.style.display = "block";
+            rankingBoard.innerHTML = "<h2>Ranking Board</h2>";
+            data.forEach((entry, index) => {
+                var entryElement = document.createElement("div");
+                entryElement.className = "rank";
+                entryElement.innerHTML = `<span class="name">${index + 1}. ${entry.name}</span><span class="time">${entry.elapsedTime} seconds</span>`;
+                rankingBoard.appendChild(entryElement);
+            });
         }
 
         function sendToGoogleSheets() {
