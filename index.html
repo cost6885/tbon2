@@ -487,10 +487,10 @@
             fetch('https://script.google.com/macros/s/AKfycbzExuC-HVHOa1kW9SFwrUYtp6D-ICyWwXRrp7CYcEIXzKqrIhgR7Ga4bDSj4uhP2vf_bQ/exec', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(data),
+                mode: 'cors' // CORS 모드 설정
             })
             .then(response => {
                 if (response.ok) {
@@ -510,10 +510,10 @@
             fetch('https://3.149.234.125:3000/rankings', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(data),
+                mode: 'cors' // CORS 모드 설정
             })
             .then(response => {
                 if (response.ok) {
@@ -526,6 +526,7 @@
                 console.error('서버 전송 에러:', error);
             });
         }
+
         
         function restartGame() {
             document.getElementById("formContainer").style.display = "none";
