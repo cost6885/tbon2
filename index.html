@@ -22,7 +22,7 @@
             font-size: 24px;
             display: none;
         }
-        #startMessage {
+        #startMessage, #starttitle {
             text-align: center;
             font-size: 24px;
             display: none;
@@ -46,6 +46,23 @@
             padding: 20px;
             border-radius: 10px;
         }
+        #rankingBoard {
+            display: none;
+            text-align: center;
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(255, 255, 255, 0.9);
+            color: black;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+        }
+        .rank {
+            margin: 5px 0;
+        }
     </style>
 </head>
 <body>
@@ -53,7 +70,8 @@
         <label>회사: <input type="text" id="company"></label><br>
         <label>사번: <input type="text" id="employeeId"></label><br>
         <label>이름: <input type="text" id="name"></label><br>
-        <button onclick="startGame()">게임 시작</button>
+        <button onclick="sendToGoogleSheets()">이벤트 응모하기</button>
+    <button onclick="startGame()" id="starttitle">스페이스바를 눌러서 게임 시작</div>
     </div>
     <canvas id="gameCanvas" width="640" height="600"></canvas>
     <div id="startMessage">스페이스바를 눌러서 다시 시작</div>
@@ -179,15 +197,21 @@
             ctx.font = "24px Arial";
             ctx.textAlign = "center";
             ctx.fillText("성공! 이미지를 클릭하세요.", canvas.width / 2, imageY - 20);
-
+        
             // Calculate and store elapsed time
             var endTime = Date.now();
-            elapsedTime = Math.floor((endTime - startTime) / 1000);
+            elapsedTime = ((endTime - startTime) / 1000).toFixed(2);
             localStorage.setItem("elapsedTime", elapsedTime);
-
+        
             // Send data to Google Sheets
             sendDataToServer();
-
+        
+            // Display ranking board
+            displayRankingBoard();
+        
+            // Display event application form and button
+            document.getElementById("formContainer").style.display = "block";
+        
             successMessageShown = true;
             console.log("Success message drawn.");
         }
@@ -223,13 +247,14 @@
 
         function drawElapsedTime() {
             if (gameStarted) {
-                elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+                elapsedTime = ((Date.now() - startTime) / 1000).toFixed(2);
                 ctx.fillStyle = "black";
                 ctx.font = "12px Arial";
                 ctx.textAlign = "right";
                 ctx.fillText(`Time: ${elapsedTime}s`, canvas.width - 10, 20);
             }
         }
+
 
         function collisionDetection() {
             for (var c = 0; c < brickColumnCount; c++) {
@@ -389,6 +414,37 @@
                 .catch(error => {
                     console.error('Error:', error);
                 });
+        }
+
+        function sendToGoogleSheets() {
+            var company = document.getElementById("company").value;
+            var employeeId = document.getElementById("employeeId").value;
+            var name = document.getElementById("name").value;
+            var elapsedTime = localStorage.getItem("elapsedTime");
+        
+            var data = {
+                company: company,
+                employeeId: employeeId,
+                name: name,
+                elapsedTime: elapsedTime
+            };
+        
+            fetch('https://script.google.com/macros/s/AKfycbzf2jHdzEuzbBrYbEik9ZlUUCXEhaHQzOYsxbJ_vlLQJO1awUVbQFe6wI3nUtzp4Hrx6g/exec', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                alert('이벤트 응모가 완료되었습니다.');
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('이벤트 응모 중 오류가 발생했습니다.');
+            });
         }
     </script>
     <div id="rankingBoard" style="display: none;"></div>
