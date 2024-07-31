@@ -375,12 +375,12 @@
                     dy = -dy;
                     
                     // 랜덤 각도 변경 (변화 범위를 -0.3에서 0.3으로 증가)
-                    var randAngle = (Math.random() - 0.5) * 4; // 
+                    var randAngle = (Math.random() - 0.5) * 30; // 
                     dx += randAngle;
         
                     // 공이 너무 빠르게 이동하지 않도록 속도 제한 (최소 8, 최대 12)
                     var minSpeed = 8;
-                    var maxSpeed = 12;
+                    var maxSpeed = 16;
                     var speed = Math.sqrt(dx * dx + dy * dy);
                     if (speed < minSpeed || speed > maxSpeed) {
                         // 무작위 속도를 설정
