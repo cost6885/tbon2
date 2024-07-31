@@ -154,7 +154,8 @@
             brickImage.onload = image.onload = ballImage.onload = function() {
                 console.log("All images loaded");
                 hideLoadingScreen(); // Hide loading screen
-                showStartButton();
+                createStartButton(); // 먼저 버튼을 생성하고
+                showStartButton(); // 그 다음에 버튼을 표시
                 initGame();
             };
 
@@ -208,8 +209,14 @@
 
 
         function showStartButton() {
-            document.getElementById("startButton").style.display = "block";
+            var startButton = document.getElementById('startButton');
+            if (startButton) {
+                startButton.style.display = 'block';
+            } else {
+                console.error("startButton element not found!");
+            }
         }
+
 
         
         function initGame() {
