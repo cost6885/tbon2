@@ -78,11 +78,11 @@
 
             brickRowCount = 2;
             brickColumnCount = 6;
-            brickWidth = 96;
-            brickHeight = 104;
+            brickWidth = 98;
+            brickHeight = 106;
             brickPadding = 0;
-            brickOffsetTop = 30;
-            brickOffsetLeft = 30;
+            brickOffsetTop = 20;
+            brickOffsetLeft = 20;
 
             imageX = 0; imageY = 0; imageWidth = 200; imageHeight = 200;
             successMessageShown = false;
@@ -260,7 +260,7 @@
                 if (x > paddleX && x < paddleX + paddleWidth) {
                     dy = -dy;
                     // 랜덤 각도 변경 추가
-                    var randAngle = (Math.random() - 0.5) * 0.2; // -0.1 to 0.1 범위의 랜덤값
+                    var randAngle = (Math.random() - 0.5) * 0.6; // -0.3 to 0.3 범위의 랜덤값
                     dx += randAngle;
                     y = canvas.height - paddleHeight - enlargedBallRadius; // 공의 위치를 패들 위로 조정
                 } else if (y + dy > canvas.height - enlargedBallRadius) {
