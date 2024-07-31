@@ -374,9 +374,25 @@
                 if (x > paddleX && x < paddleX + paddleWidth) {
                     dy = -dy;
                     
-                    // 랜덤 각도 변경 (변화 범위를 -0.3에서 0.3으로 증가)
-                    var randAngle = (Math.random() - 0.5) * 30; // 
+                    // 랜덤 각도 변경 (변화 범위를 -15도에서 15도로 증가)
+                    var randAngle = (Math.random() - 0.5) * 30; // -15 to 15 degrees
+                    
                     dx += randAngle;
+        
+                    // 최소 각도를 유지하도록 설정
+                    var angle = Math.atan2(dy, dx);
+                    var minAngle = Math.PI / 9; // 20도 (라디안)
+                    
+                    if (Math.abs(angle) < minAngle) {
+                        if (angle < 0) {
+                            angle = -minAngle;
+                        } else {
+                            angle = minAngle;
+                        }
+                        var speed = Math.sqrt(dx * dx + dy * dy);
+                        dx = speed * Math.cos(angle);
+                        dy = speed * Math.sin(angle);
+                    }
         
                     // 공이 너무 빠르게 이동하지 않도록 속도 제한 (최소 8, 최대 12)
                     var minSpeed = 8;
