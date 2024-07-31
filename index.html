@@ -429,11 +429,11 @@
         function updateRankingBoardUI(data) {
             var rankingBoard = document.getElementById("rankingBoard");
             rankingBoard.style.display = "block";
-            rankingBoard.innerHTML = "<h2>Ranking Board</h2>";
+            rankingBoard.innerHTML = "<h2>명예의 전당</h2>";
             data.forEach((entry, index) => {
                 var entryElement = document.createElement("div");
                 entryElement.className = "rank";
-                entryElement.innerHTML = `<span class="name">${index + 1}. ${entry.name}</span><span class="time">${entry.elapsedTime} seconds</span>`;
+                entryElement.innerHTML = `<span class="name">${index + 1}. ${entry.name}</span><span class="time">${entry.elapsedTime} 초</span>`;
                 rankingBoard.appendChild(entryElement);
             });
         }
