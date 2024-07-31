@@ -77,6 +77,20 @@
         .rank {
             margin: 5px 0;
         }
+        #loadingScreen {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 24px;
+            display: none; /* Initially hidden */
+        }
+
     </style>
 </head>
 <body>
@@ -86,6 +100,9 @@
         <label>이름: <input type="text" id="name"></label><br>
         <button onclick="sendToGoogleSheets()">이벤트 응모하기</button>
         <button onclick="restartGame()">다시하기</button>
+    </div>
+    <div id="loadingScreen">
+    <p>로딩 중...</p>
     </div>
     <canvas id="gameCanvas" width="640" height="600"></canvas>
     <div id="startMessage">스페이스바를 눌러서 다시 시작</div>
@@ -98,6 +115,7 @@
         var brickImage, image, ballImage, enlargedBallRadius, startTime, elapsedTime;
 
         document.addEventListener("DOMContentLoaded", function() {
+            showLoadingScreen(); // Show loading screen initially
             canvas = document.getElementById("gameCanvas");
             ctx = canvas.getContext("2d");
 
@@ -135,6 +153,7 @@
 
             brickImage.onload = image.onload = ballImage.onload = function() {
                 console.log("All images loaded");
+                hideLoadingScreen(); // Hide loading screen
                 showStartButton();
                 initGame();
             };
@@ -157,6 +176,17 @@
         });
 
 
+
+        function showLoadingScreen() {
+            document.getElementById("loadingScreen").style.display = "block";
+        }
+        
+        function hideLoadingScreen() {
+            document.getElementById("loadingScreen").style.display = "none";
+        }
+
+
+        
         function createStartButton() {
             var startButton = document.createElement('div');
             startButton.id = 'startButton';
