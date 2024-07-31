@@ -217,15 +217,9 @@
             elapsedTime = ((endTime - startTime) / 1000).toFixed(2);
             localStorage.setItem("elapsedTime", elapsedTime);
         
-            // Send data to Google Sheets
+            // Send data to server and display ranking board
             sendDataToServer();
-        
-            // Display ranking board
-            displayRankingBoard();
-        
-            // Display event application form and button
-            document.getElementById("formContainer").style.display = "block";
-        
+            
             successMessageShown = true;
             console.log("Success message drawn.");
         }
@@ -377,14 +371,14 @@
             var employeeId = localStorage.getItem("employeeId");
             var name = localStorage.getItem("name");
             var elapsedTime = localStorage.getItem("elapsedTime");
-
+        
             var data = {
                 company: company,
                 employeeId: employeeId,
                 name: name,
                 elapsedTime: parseFloat(elapsedTime) // Ensure it's a number
             };
-
+        
             fetch('https://3.149.234.125:3000/rankings', {
                 method: 'POST',
                 headers: {
@@ -394,7 +388,8 @@
             }).then(response => {
                 if (response.ok) {
                     console.log('Data sent to server successfully.');
-                    displayRankingBoard(); // 랭킹보드 업데이트
+                    // Fetch and display ranking board after successfully sending data
+                    displayRankingBoard();
                 } else {
                     console.error('Error sending data to server.');
                 }
@@ -402,7 +397,7 @@
                 console.error('Error:', error);
             });
         }
-
+        
         function displayRankingBoard() {
             fetch('https://3.149.234.125:3000/rankings')
                 .then(response => response.json())
@@ -432,17 +427,16 @@
                 company: company,
                 employeeId: employeeId,
                 name: name,
-                elapsedTime: elapsedTime
+                elapsedTime: parseFloat(elapsedTime)
             };
         
             fetch('https://script.google.com/macros/s/AKfycbzf2jHdzEuzbBrYbEik9ZlUUCXEhaHQzOYsxbJ_vlLQJO1awUVbQFe6wI3nUtzp4Hrx6g/exec', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(data),
-            })
-            .then(response => response.json())
+                body: JSON.stringify(data)
+            }).then(response => response.json())
             .then(data => {
                 console.log('Success:', data);
                 alert('이벤트 응모가 완료되었습니다.');
@@ -452,6 +446,7 @@
                 alert('이벤트 응모 중 오류가 발생했습니다.');
             });
         }
+
     </script>
     <div id="rankingBoard" style="display: none;"></div>
 </body>
