@@ -135,7 +135,7 @@
 
             brickImage.onload = image.onload = ballImage.onload = function() {
                 console.log("All images loaded");
-                createStartButton(); // 게임 시작 버튼 생성
+                showStartButton();
                 initGame();
             };
 
@@ -172,7 +172,13 @@
             startButton.style.borderRadius = '10px';
             startButton.style.textAlign = 'center';
             startButton.style.fontSize = '24px';
+            startButton.style.display = 'none'; // 처음에는 숨김
             document.body.appendChild(startButton);
+        }
+
+
+        function showStartButton() {
+            document.getElementById("startButton").style.display = "block";
         }
 
         
@@ -363,9 +369,7 @@
             document.getElementById("gameCanvas").style.display = "block";
             document.getElementById("rankingBoard").style.display = "none";
             document.getElementById("startMessage").style.display = "none";
-        
-            // 게임 시작 버튼 숨기기
-            document.getElementById('startButton').style.display = 'none';
+            document.getElementById("startButton").style.display = "none"; // 게임 시작 후 버튼 숨기기
         
             // Store user input
             var company = document.getElementById("company").value;
