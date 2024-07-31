@@ -55,7 +55,7 @@
         <label>이름: <input type="text" id="name"></label><br>
         <button onclick="startGame()">게임 시작</button>
     </div>
-    <canvas id="gameCanvas" width="640" height="800"></canvas>
+    <canvas id="gameCanvas" width="640" height="600"></canvas>
     <div id="startMessage">스페이스바를 눌러서 다시 시작</div>
     <div id="message">성공!</div>
     <script>
@@ -70,17 +70,17 @@
             ctx = canvas.getContext("2d");
 
             ballRadius = 10;
-            paddleHeight = 20;
-            paddleWidth = 80;
+            paddleHeight = 24;
+            paddleWidth = 100;
 
             rightPressed = false;
             leftPressed = false;
 
             brickRowCount = 2;
             brickColumnCount = 6;
-            brickWidth = 95;
-            brickHeight = 103;
-            brickPadding = 2;
+            brickWidth = 96;
+            brickHeight = 104;
+            brickPadding = 0;
             brickOffsetTop = 30;
             brickOffsetLeft = 30;
 
@@ -259,6 +259,9 @@
             if (y + dy > canvas.height - paddleHeight - enlargedBallRadius) {
                 if (x > paddleX && x < paddleX + paddleWidth) {
                     dy = -dy;
+                    // 랜덤 각도 변경 추가
+                    var randAngle = (Math.random() - 0.5) * 0.2; // -0.1 to 0.1 범위의 랜덤값
+                    dx += randAngle;
                     y = canvas.height - paddleHeight - enlargedBallRadius; // 공의 위치를 패들 위로 조정
                 } else if (y + dy > canvas.height - enlargedBallRadius) {
                     gameStarted = false;
@@ -268,6 +271,7 @@
                 }
             }
         }
+
 
         function startGame() {
             document.getElementById("formContainer").style.display = "none";
