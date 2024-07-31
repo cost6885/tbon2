@@ -296,28 +296,39 @@
                     }
                 }
             }
-            // 패들 충돌 감지
-            if (y + dy > canvas.height - paddleHeight - enlargedBallRadius) {
-                if (x > paddleX && x < paddleX + paddleWidth) {
-                    dy = -dy;
-                    
-                    // 패들의 양쪽 끝 부분(20%)에서만 각도 변경
-                    var leftEnd = paddleX + paddleWidth * 0.5;
-                    var rightEnd = paddleX + paddleWidth * 0.5;
-                    
-                    if (x < leftEnd || x > rightEnd) {
-                        // 랜덤 각도 변경 (변화 범위를 -0.3에서 0.3으로 증가)
-                        var randAngle = (Math.random() - 0.5) * 1; // -0.3 to 0.3 범위의 랜덤값
-                        dx += randAngle;
-                    }
-                    
-                    y = canvas.height - paddleHeight - enlargedBallRadius; // 공의 위치를 패들 위로 조정
-                } else if (y + dy > canvas.height - enlargedBallRadius) {
-                    gameStarted = false;
-                    document.getElementById("startMessage").style.display = "block"; // 바닥에 닿으면 게임 종료
-                    successMessageShown = true;
-                    return;
+        // 패들 충돌 감지
+        if (y + dy > canvas.height - paddleHeight - enlargedBallRadius) {
+            if (x > paddleX && x < paddleX + paddleWidth) {
+                dy = -dy;
+                
+                // 패들의 중앙으로부터의 거리 계산
+                var paddleCenter = paddleX + paddleWidth / 2;
+                var distanceFromCenter = x - paddleCenter;
+                var maxDistance = paddleWidth / 2;
+                
+                // 중앙으로부터의 거리에 비례하여 각도 변경
+                var angleFactor = (distanceFromCenter / maxDistance) * 2; // -2에서 2까지의 값
+                
+                // 랜덤 각도 변경 (변화 범위를 -0.5에서 0.5로 증가)
+                var randAngle = (Math.random() - 0.5) * 0.5; // -0.25 to 0.25 범위의 랜덤값
+                dx += angleFactor + randAngle;
+        
+                // 공이 너무 빠르게 이동하지 않도록 속도 제한
+                var maxSpeed = 10;
+                var speed = Math.sqrt(dx * dx + dy * dy);
+                if (speed > maxSpeed) {
+                    dx = (dx / speed) * maxSpeed;
+                    dy = (dy / speed) * maxSpeed;
                 }
+                
+                y = canvas.height - paddleHeight - enlargedBallRadius; // 공의 위치를 패들 위로 조정
+            } else if (y + dy > canvas.height - enlargedBallRadius) {
+                gameStarted = false;
+                document.getElementById("startMessage").style.display = "block"; // 바닥에 닿으면 게임 종료
+                successMessageShown = true;
+                return;
+            }
+        }
             }
         }
 
@@ -452,7 +463,7 @@
             };
         
             // Google 스프레드 시트로 데이터 전송
-            fetch('https://script.google.com/macros/s/AKfycbzf2jHdzEuzbBrYbEik9ZlUUCXEhaHQzOYsxbJ_vlLQJO1awUVbQFe6wI3nUtzp4Hrx6g/exec', {
+            fetch('https://script.google.com/macros/s/AKfycbzExuC-HVHOa1kW9SFwrUYtp6D-ICyWwXRrp7CYcEIXzKqrIhgR7Ga4bDSj4uhP2vf_bQ/exec', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
