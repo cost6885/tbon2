@@ -451,25 +451,55 @@
                 elapsedTime: elapsedTime
             };
         
+            // Google 스프레드 시트로 데이터 전송
             fetch('https://script.google.com/macros/s/AKfycbzf2jHdzEuzbBrYbEik9ZlUUCXEhaHQzOYsxbJ_vlLQJO1awUVbQFe6wI3nUtzp4Hrx6g/exec', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
                 },
-                body: JSON.stringify(data)
-            }).then(response => {
+                body: JSON.stringify(data),
+            })
+            .then(response => {
                 if (response.ok) {
-                    console.log('Success:', response);
+                    console.log('Google Sheets 전송 성공:', response);
                     alert('이벤트 응모가 완료되었습니다.');
                 } else {
-                    console.error('Error:', response);
+                    console.error('Google Sheets 전송 에러:', response);
                     alert('이벤트 응모 중 오류가 발생했습니다.');
                 }
-            }).catch((error) => {
-                console.error('Error:', error);
+            })
+            .catch((error) => {
+                console.error('Google Sheets 전송 에러:', error);
                 alert('이벤트 응모 중 오류가 발생했습니다.');
             });
+        
+            // 서버로 데이터 전송
+            fetch('https://3.149.234.125:3000/rankings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('서버 전송 성공:', response);
+                } else {
+                    console.error('서버 전송 에러:', response);
+                }
+            })
+            .catch((error) => {
+                console.error('서버 전송 에러:', error);
+            });
         }
+        
+        function restartGame() {
+            document.getElementById("formContainer").style.display = "none";
+            startGame();
+        }
+
 
 
     </script>
