@@ -448,7 +448,7 @@
                 company: company,
                 employeeId: employeeId,
                 name: name,
-                elapsedTime: parseFloat(elapsedTime)
+                elapsedTime: elapsedTime
             };
         
             fetch('https://script.google.com/macros/s/AKfycbzf2jHdzEuzbBrYbEik9ZlUUCXEhaHQzOYsxbJ_vlLQJO1awUVbQFe6wI3nUtzp4Hrx6g/exec', {
@@ -457,16 +457,20 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(data)
-            }).then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-                alert('이벤트 응모가 완료되었습니다.');
-            })
-            .catch((error) => {
+            }).then(response => {
+                if (response.ok) {
+                    console.log('Success:', response);
+                    alert('이벤트 응모가 완료되었습니다.');
+                } else {
+                    console.error('Error:', response);
+                    alert('이벤트 응모 중 오류가 발생했습니다.');
+                }
+            }).catch((error) => {
                 console.error('Error:', error);
                 alert('이벤트 응모 중 오류가 발생했습니다.');
             });
         }
+
 
     </script>
     <div id="rankingBoard" style="display: none;"></div>
