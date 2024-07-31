@@ -217,16 +217,28 @@
 
         function drawSuccessMessage() {
             console.log("Drawing success message...");
+            imageX = (canvas.width - imageWidth) / 2;
+            imageY = (canvas.height - imageHeight) / 2;
+            ctx.drawImage(image, imageX, imageY, imageWidth, imageHeight);
+            ctx.fillStyle = "black";
+            ctx.font = "24px Arial";
+            ctx.textAlign = "center";
+            ctx.fillText("성공!", canvas.width / 2, imageY - 20);
         
             // Calculate and store elapsed time
             var endTime = Date.now();
             elapsedTime = ((endTime - startTime) / 1000).toFixed(2);
             localStorage.setItem("elapsedTime", elapsedTime);
         
-            // Send data to server and display ranking board
-            sendDataToServer();
+            // 새로운 기록을 저장
+            var name = localStorage.getItem("name") || "Unknown";
+            var newEntry = { name: name, elapsedTime: parseFloat(elapsedTime) };
+            saveLocalRanking(newEntry);
         
-            // Display formContainer for event application
+            // Display ranking board
+            displayLocalRankingBoard();
+        
+            // Display event application form and button
             document.getElementById("formContainer").style.display = "block";
         
             successMessageShown = true;
@@ -296,31 +308,28 @@
                     }
                 }
             }
+        
             // 패들 충돌 감지
             if (y + dy > canvas.height - paddleHeight - enlargedBallRadius) {
                 if (x > paddleX && x < paddleX + paddleWidth) {
                     dy = -dy;
                     
-                    // 패들의 중앙으로부터의 거리 계산
-                    var paddleCenter = paddleX + paddleWidth / 2;
-                    var distanceFromCenter = x - paddleCenter;
-                    var maxDistance = paddleWidth / 2;
-                    
-                    // 중앙으로부터의 거리에 비례하여 각도 변경
-                    var angleFactor = (distanceFromCenter / maxDistance) * 2; // -2에서 2까지의 값
-                    
                     // 랜덤 각도 변경 (변화 범위를 -0.3에서 0.3으로 증가)
                     var randAngle = (Math.random() - 0.5) * 0.6; // -0.3 to 0.3 범위의 랜덤값
-                    dx += angleFactor + randAngle;
-            
-                    // 공이 너무 빠르게 이동하지 않도록 속도 제한
-                    var maxSpeed = 10;
+                    dx += randAngle;
+        
+                    // 공이 너무 빠르게 이동하지 않도록 속도 제한 (최소 7, 최대 12)
+                    var minSpeed = 7;
+                    var maxSpeed = 12;
                     var speed = Math.sqrt(dx * dx + dy * dy);
-                    if (speed > maxSpeed) {
+                    if (speed < minSpeed) {
+                        dx = (dx / speed) * minSpeed;
+                        dy = (dy / speed) * minSpeed;
+                    } else if (speed > maxSpeed) {
                         dx = (dx / speed) * maxSpeed;
                         dy = (dy / speed) * maxSpeed;
                     }
-                    
+        
                     y = canvas.height - paddleHeight - enlargedBallRadius; // 공의 위치를 패들 위로 조정
                 } else if (y + dy > canvas.height - enlargedBallRadius) {
                     gameStarted = false;
@@ -330,6 +339,7 @@
                 }
             }
         }
+
 
 
         function startGame() {
@@ -437,6 +447,20 @@
                 });
         }
 
+        function displayLocalRankingBoard() {
+            var rankings = getLocalRankings();
+            var rankingBoard = document.getElementById("rankingBoard");
+            rankingBoard.style.display = "block";
+            rankingBoard.innerHTML = "<h2>Ranking Board</h2>";
+            rankings.forEach((entry, index) => {
+                var entryElement = document.createElement("div");
+                entryElement.className = "rank";
+                entryElement.innerHTML = `<span class="name">${index + 1}. ${entry.name}</span><span class="time">${entry.elapsedTime} seconds</span>`;
+                rankingBoard.appendChild(entryElement);
+            });
+        }
+        
+
         function updateRankingBoardUI(data) {
             var rankingBoard = document.getElementById("rankingBoard");
             rankingBoard.style.display = "block";
@@ -512,6 +536,30 @@
         }
 
 
+
+        function getLocalRankings() {
+            // 로컬 스토리지에서 랭킹 데이터를 가져옵니다.
+            var rankings = JSON.parse(localStorage.getItem('rankings')) || [];
+            return rankings;
+        }
+        
+        function saveLocalRanking(newEntry) {
+            var rankings = getLocalRankings();
+            
+            // 새로운 기록을 랭킹에 추가합니다.
+            rankings.push(newEntry);
+            
+            // 기록을 시간순으로 정렬합니다.
+            rankings.sort(function(a, b) {
+                return a.elapsedTime - b.elapsedTime;
+            });
+            
+            // 상위 5개의 기록만 유지합니다.
+            rankings = rankings.slice(0, 5);
+            
+            // 로컬 스토리지에 업데이트된 랭킹을 저장합니다.
+            localStorage.setItem('rankings', JSON.stringify(rankings));
+        }
 
     </script>
     <div id="rankingBoard" style="display: none;"></div>
