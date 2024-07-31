@@ -136,6 +136,7 @@
 
             brickImage.onload = image.onload = ballImage.onload = function() {
                 console.log("All images loaded");
+                createStartButton(); // 게임 시작 버튼 생성
                 initGame();
             };
 
@@ -156,6 +157,26 @@
             });
         });
 
+
+        function createStartButton() {
+            var startButton = document.createElement('div');
+            startButton.id = 'startButton';
+            startButton.innerText = '게임 시작';
+            startButton.onclick = startGame;
+            startButton.style.position = 'absolute';
+            startButton.style.top = '50%';
+            startButton.style.left = '50%';
+            startButton.style.transform = 'translate(-50%, -50%)';
+            startButton.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+            startButton.style.color = 'white';
+            startButton.style.padding = '20px';
+            startButton.style.borderRadius = '10px';
+            startButton.style.textAlign = 'center';
+            startButton.style.fontSize = '24px';
+            document.body.appendChild(startButton);
+        }
+
+        
         function initGame() {
             console.log("Initializing game...");
             x = canvas.width / 2;
@@ -342,14 +363,25 @@
             document.getElementById("formContainer").style.display = "none";
             document.getElementById("gameCanvas").style.display = "block";
             document.getElementById("rankingBoard").style.display = "none";
-            document.getElementById("startButton").style.display = "none";
             document.getElementById("startMessage").style.display = "none";
-
+        
+            // 게임 시작 버튼 숨기기
+            document.getElementById('startButton').style.display = 'none';
+        
+            // Store user input
+            var company = document.getElementById("company").value;
+            var employeeId = document.getElementById("employeeId").value;
+            var name = document.getElementById("name").value;
+            localStorage.setItem("company", company);
+            localStorage.setItem("employeeId", employeeId);
+            localStorage.setItem("name", name);
+        
             initGame();
             gameStarted = true; // Ensure gameStarted is set to true
             startTime = Date.now(); // Start the timer
             draw(); // Start the game loop
         }
+
 
         function draw() {
             if (!gameStarted) return;
