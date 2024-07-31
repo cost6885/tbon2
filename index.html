@@ -217,13 +217,6 @@
 
         function drawSuccessMessage() {
             console.log("Drawing success message...");
-            imageX = (canvas.width - imageWidth) / 2;
-            imageY = (canvas.height - imageHeight) / 2;
-            ctx.drawImage(image, imageX, imageY, imageWidth, imageHeight);
-            ctx.fillStyle = "black";
-            ctx.font = "24px Arial";
-            ctx.textAlign = "center";
-            ctx.fillText("성공! 이미지를 클릭하세요.", canvas.width / 2, imageY - 20);
         
             // Calculate and store elapsed time
             var endTime = Date.now();
@@ -232,7 +225,10 @@
         
             // Send data to server and display ranking board
             sendDataToServer();
-            
+        
+            // Display formContainer for event application
+            document.getElementById("formContainer").style.display = "block";
+        
             successMessageShown = true;
             console.log("Success message drawn.");
         }
