@@ -162,7 +162,7 @@
             y = canvas.height - paddleHeight - enlargedBallRadius; // 패들 위로 공의 초기 위치 설정
             dx = 7;
             dy = -7;
-            paddleX = (canvas.width - paddleWidth) / 2;
+            paddleX = (canvas.width - paddleWidth) / 3;
 
             bricks = [];
             for (var c = 0; c < brickColumnCount; c++) {
@@ -217,9 +217,6 @@
 
         function drawSuccessMessage() {
             console.log("Drawing success message...");
-            imageX = (canvas.width - imageWidth) / 2;
-            imageY = (canvas.height - imageHeight) / 2;
-            ctx.drawImage(image, imageX, imageY, imageWidth, imageHeight);
             ctx.fillStyle = "black";
             ctx.font = "24px Arial";
             ctx.textAlign = "center";
