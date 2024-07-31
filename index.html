@@ -162,7 +162,7 @@
             y = canvas.height - paddleHeight - enlargedBallRadius; // 패들 위로 공의 초기 위치 설정
             dx = 7;
             dy = -7;
-            paddleX = (canvas.width - paddleWidth) / 3;
+            paddleX = (canvas.width - paddleWidth) / 5;
 
             bricks = [];
             for (var c = 0; c < brickColumnCount; c++) {
@@ -315,16 +315,15 @@
                     var randAngle = (Math.random() - 0.5) * 4; // 
                     dx += randAngle;
         
-                    // 공이 너무 빠르게 이동하지 않도록 속도 제한 (최소 7, 최대 12)
+                    // 공이 너무 빠르게 이동하지 않도록 속도 제한 (최소 8, 최대 12)
                     var minSpeed = 8;
                     var maxSpeed = 12;
                     var speed = Math.sqrt(dx * dx + dy * dy);
-                    if (speed < minSpeed) {
-                        dx = (dx / speed) * minSpeed;
-                        dy = (dy / speed) * minSpeed;
-                    } else if (speed > maxSpeed) {
-                        dx = (dx / speed) * maxSpeed;
-                        dy = (dy / speed) * maxSpeed;
+                    if (speed < minSpeed || speed > maxSpeed) {
+                        // 무작위 속도를 설정
+                        var randomSpeed = minSpeed + Math.random() * (maxSpeed - minSpeed);
+                        dx = (dx / speed) * randomSpeed;
+                        dy = (dy / speed) * randomSpeed;
                     }
         
                     y = canvas.height - paddleHeight - enlargedBallRadius; // 공의 위치를 패들 위로 조정
