@@ -259,9 +259,17 @@
             if (y + dy > canvas.height - paddleHeight - enlargedBallRadius) {
                 if (x > paddleX && x < paddleX + paddleWidth) {
                     dy = -dy;
-                    // 랜덤 각도 변경 추가
-                    var randAngle = (Math.random() - 0.5) * 0.6; // -0.3 to 0.3 범위의 랜덤값
-                    dx += randAngle;
+                    
+                    // 패들의 양쪽 끝 부분(20%)에서만 각도 변경
+                    var leftEnd = paddleX + paddleWidth * 0.2;
+                    var rightEnd = paddleX + paddleWidth * 0.8;
+                    
+                    if (x < leftEnd || x > rightEnd) {
+                        // 랜덤 각도 변경 (변화 범위를 -0.3에서 0.3으로 증가)
+                        var randAngle = (Math.random() - 0.5) * 0.6; // -0.3 to 0.3 범위의 랜덤값
+                        dx += randAngle;
+                    }
+                    
                     y = canvas.height - paddleHeight - enlargedBallRadius; // 공의 위치를 패들 위로 조정
                 } else if (y + dy > canvas.height - enlargedBallRadius) {
                     gameStarted = false;
@@ -271,6 +279,7 @@
                 }
             }
         }
+
 
 
         function startGame() {
