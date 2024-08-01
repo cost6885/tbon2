@@ -204,6 +204,13 @@
 
 
 
+        function drawBackground() {
+            ctx.globalAlpha = 0.3; // 투명도 설정 (0.0에서 1.0 사이 값)
+            ctx.drawImage(canvasImage, 0, 0, canvas.width, canvas.height);  // 배경 이미지 그리기
+            ctx.globalAlpha = 1.0; // 투명도 원래대로 돌리기
+        }
+        
+
         function showLoadingScreen() {
             document.getElementById("loadingScreen").style.display = "block";
         }
@@ -273,7 +280,7 @@
 
         function restartGame() {
             document.getElementById("formContainer").style.display = "none";
-            document.getElementById("gameCanvas").style.display = "none";
+            document.getElementById("gameCanvas").style.display = "block";
             document.getElementById("rankingBoard").style.display = "none";
             document.getElementById("startMessage").style.display = "none";
             initGame();
@@ -447,7 +454,7 @@
         function startGame() {
             document.getElementById("gameDescription").style.display = 'none';
             document.getElementById("formContainer").style.display = "none";
-            document.getElementById("gameCanvas").style.display = "none";
+            document.getElementById("gameCanvas").style.display = "block";
             document.getElementById("rankingBoard").style.display = "none";
             document.getElementById("startMessage").style.display = "none";
             document.getElementById("startButton").style.display = "none"; // 게임 시작 후 버튼 숨기기
@@ -471,6 +478,7 @@
             if (!gameStarted) return;
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawBackground(); // 배경 이미지 그리기
             drawBricks();
             drawBall();
             drawPaddle();
