@@ -337,10 +337,10 @@
         function drawElapsedTime() {
             if (gameStarted) {
                 elapsedTime = ((Date.now() - startTime) / 1000).toFixed(2);
-                ctx.fillStyle = "black";
-                ctx.font = "12px Arial";
-                ctx.textAlign = "right";
-                ctx.fillText(`Time: ${elapsedTime}s`, canvas.width - 10, 20);
+                ctx.fillStyle = "white";
+                ctx.font = "24px Arial";
+                ctx.textAlign = "center";
+                ctx.fillText(`Time: ${elapsedTime}s`, canvas.width / 2, canvas.height / 3); // y 좌표를 canvas.height / 3로 설정
             }
         }
 
