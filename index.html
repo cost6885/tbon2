@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>벽돌깨기 게임</title>
+    <title>너구리를 가져와</title>
     <style>
         body {
             display: flex;
@@ -236,13 +236,14 @@
 
         function showStartButton() {
             var startButton = document.getElementById('startButton');
+            var gameDescription = document.getElementById('gameDescription');
             if (startButton) {
                 startButton.style.display = 'block';
+                gameDescription.style.display = 'block';
             } else {
                 console.error("startButton element not found!");
             }
         }
-
 
         
         function initGame() {
