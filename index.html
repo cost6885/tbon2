@@ -95,7 +95,7 @@
             top: 30%;
             left: 50%;
             transform: translate(-50%, -50%);            
-            color: white;
+            color: black;
             padding: 10px;
             border-radius: 10px;
             text-align: center;
@@ -170,7 +170,9 @@
             canvasImage.src = 'https://i.pinimg.com/736x/9d/dc/37/9ddc37cb811c8fe8c6c7ad0211322ea8.jpg';  // 이미지 경로 설정
         
             canvasImage.onload = function() {
-                ctx.drawImage(canvasImage, 0, 0, canvas.width, canvas.height);  // 배경 이미지 그리기            
+                    ctx.globalAlpha = 0.5;  // 투명도 설정
+                    ctx.drawImage(canvasImage, 0, 0, canvas.width, canvas.height);  // 배경 이미지 그리기
+                    ctx.globalAlpha = 1;  // 투명도 초기화
             };
 
             enlargedBallRadius = ballRadius * 5; // 이미지 크기 변경에 따라 반경 조정
