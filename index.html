@@ -106,7 +106,11 @@
 </head>
 <body>
     <div id="gameDescription">
+    과연 너구리씨는 나무에 열린 제품들을 가지고
+    저녁식사 시간이 되기전에 돌아 갈 수 있을까요?
     게임을 시작하려면 '게임 시작' 버튼을 클릭하세요.
+    빨리 돌아간 랭킹 3등까지에게는 특별한 상품을
+    참여하신 7분에게도 추첨을 통해 상품을 드립니다.
     </div>
     
     <div id="formContainer">
@@ -170,7 +174,7 @@
             canvasImage.src = 'https://i.pinimg.com/736x/9d/dc/37/9ddc37cb811c8fe8c6c7ad0211322ea8.jpg';  // 이미지 경로 설정
         
             canvasImage.onload = function() {
-                    ctx.globalAlpha = 0.5;  // 투명도 설정
+                    ctx.globalAlpha = 0.9;  // 투명도 설정
                     ctx.drawImage(canvasImage, 0, 0, canvas.width, canvas.height);  // 배경 이미지 그리기
                     ctx.globalAlpha = 1;  // 투명도 초기화
             };
