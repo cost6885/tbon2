@@ -92,7 +92,7 @@
         }
         #gameDescription {
             position: absolute;
-            top: 50%;
+            top: 20%;
             left: 50%;
             transform: translate(-50%, -50%);
             background-color: rgba(0, 0, 0, 0.7);
@@ -100,7 +100,7 @@
             padding: 20px;
             border-radius: 10px;
             text-align: center;
-            font-size: 24px;
+            font-size: 36px;
         }
 
     </style>
@@ -135,7 +135,7 @@
         canvasImage.src = 'https://i.pinimg.com/736x/9d/dc/37/9ddc37cb811c8fe8c6c7ad0211322ea8.jpg';  // 이미지 경로 설정
         
         canvasImage.onload = function() {
-            ctx.globalAlpha = 0.3;  // 투명도 설정
+            ctx.globalAlpha = 0.1;  // 투명도 설정
             ctx.drawImage(canvasImage, 0, 0, canvas.width, canvas.height);  // 배경 이미지 그리기
             ctx.globalAlpha = 1;  // 투명도 초기화
         };
