@@ -90,10 +90,26 @@
             font-size: 24px;
             display: none; /* Initially hidden */
         }
+        #gameDescription {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 24px;
+        }
 
     </style>
 </head>
 <body>
+    <div id="gameDescription">
+    게임을 시작하려면 '게임 시작' 버튼을 클릭하세요.
+    </div>
+    
     <div id="formContainer">
         <label>회사: <input type="text" id="company"></label><br>
         <label>사번: <input type="text" id="employeeId"></label><br>
@@ -114,6 +130,16 @@
         var imageX, imageY, imageWidth, imageHeight, successMessageShown, bricks, score, gameStarted;
         var brickImage, image, ballImage, enlargedBallRadius, startTime, elapsedTime;
 
+        // 이미지 로드 및 캔버스에 설정
+        var canvasImage = new Image();
+        canvasImage.src = 'https://i.pinimg.com/736x/9d/dc/37/9ddc37cb811c8fe8c6c7ad0211322ea8.jpg';  // 이미지 경로 설정
+        
+        canvasImage.onload = function() {
+            ctx.globalAlpha = 0.3;  // 투명도 설정
+            ctx.drawImage(canvasImage, 0, 0, canvas.width, canvas.height);  // 배경 이미지 그리기
+            ctx.globalAlpha = 1;  // 투명도 초기화
+        };
+        
         document.addEventListener("DOMContentLoaded", function() {
             showLoadingScreen(); // Show loading screen initially
             canvas = document.getElementById("gameCanvas");
@@ -194,7 +220,7 @@
             startButton.innerText = '게임 시작';
             startButton.onclick = startGame;
             startButton.style.position = 'absolute';
-            startButton.style.top = '50%';
+            startButton.style.top = '80%';
             startButton.style.left = '50%';
             startButton.style.transform = 'translate(-50%, -50%)';
             startButton.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
@@ -340,7 +366,7 @@
                 ctx.fillStyle = "white";
                 ctx.font = "24px Arial";
                 ctx.textAlign = "center";
-                ctx.fillText(`경과시간: ${elapsedTime}s`, canvas.width / 2, canvas.height * 2 / 3); // y 좌표를 canvas.height / 3로 설정
+                ctx.fillText(`경과시간: ${elapsedTime}초`, canvas.width / 2, canvas.height * 2 / 3); // y 좌표를 canvas.height / 3로 설정
             }
         }
 
@@ -418,6 +444,7 @@
 
 
         function startGame() {
+            document.getElementById("gameDescription").style.display = 'none';
             document.getElementById("formContainer").style.display = "none";
             document.getElementById("gameCanvas").style.display = "block";
             document.getElementById("rankingBoard").style.display = "none";
