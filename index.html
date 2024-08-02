@@ -114,7 +114,7 @@
         <br>과연 너구리씨🦝는 나무🌳에 열린 제품들을 가지고</br>
         <br>저녁식사 시간⏱ 전에 돌아 갈 수 있을까요?</br>
         <br>단짝친구 다시마들이 도와줄테니 너무 걱정마세요^^</br>
-        <br>하지만, 울퉁불퉁한 것은 어쩔수 없죠</br>
+        <br>하지만, 다시마가 울퉁불퉁한 것은 고려하셔야해요.</br>
         <br>'게임 시작' 버튼을 클릭👆하세요.</br>
         <br>💥랭킹 1~3등💥 특별한 상품</br>
         <br>👩참여자 추첨 7명👨 너구리 컵라면</br>
@@ -132,7 +132,7 @@
     </div>
     <canvas id="gameCanvas" width="640" height="600"></canvas>
     <div id="startMessage">스페이스바를 눌러서 다시 시작</div>
-    <div id="message">성공!</div>
+    <div id="message"></div>
     <script>
         // 전역 변수 정의
         var canvas, ctx, ballRadius, x, y, dx, dy, paddleHeight, paddleWidth, paddleX, rightPressed, leftPressed;
@@ -345,6 +345,11 @@
         
             // Display event application form and button
             document.getElementById("formContainer").style.display = "block";
+            
+                   // 메시지 요소 업데이트
+            var messageElement = document.getElementById("message");
+            messageElement.style.display = "block";
+            messageElement.innerText = `성공! ${elapsedTime}초`;
         
             successMessageShown = true;
             console.log("Success message drawn.");
