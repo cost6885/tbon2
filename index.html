@@ -646,13 +646,14 @@
             });
         
             // 서버로 데이터 전송
-            fetch('https://3.149.234.125:3000/rankings', {
+            // fetch('https://3.149.234.125:3000/rankings', {
+            fetch('test.danhone.shop:8000/result_data', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(data),
-                mode: 'cors' // CORS 모드 설정
+                body: JSON.stringify(data)
+                // mode: 'cors' // CORS 모드 설정
             })
             .then(response => {
                 if (response.ok) {
