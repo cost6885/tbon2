@@ -74,6 +74,7 @@
             border-radius: 10px;
             width: 80%;
             max-width: 600px;
+            font-family: 'Nanum Gothic', 'Malgun Gothic', sans-serif; /* 한글에 적합한 진한 폰트 */
         }
         .rank {
             margin: 5px 0;
@@ -419,13 +420,13 @@
                     dy = -dy;
                     
                     // 랜덤 각도 변경 (변화 범위를 -15도에서 15도로 증가)
-                    var randAngle = (Math.random() - 0.5) * 30; // -15 to 15 degrees
+                    var randAngle = (Math.random() - 0.5) * 40; // -15 to 15 degrees
                     
                     dx += randAngle;
         
                     // 최소 각도를 유지하도록 설정
                     var angle = Math.atan2(dy, dx);
-                    var minAngle = Math.PI / 9; // 20도 (라디안)
+                    var minAngle = Math.PI / 6; // 20도 (라디안)
                     
                     if (Math.abs(angle) < minAngle) {
                         if (angle < 0) {
@@ -439,8 +440,8 @@
                     }
         
                     // 공이 너무 빠르게 이동하지 않도록 속도 제한 (최소 8, 최대 12)
-                    var minSpeed = 8;
-                    var maxSpeed = 16;
+                    var minSpeed = 10;
+                    var maxSpeed = 20;
                     var speed = Math.sqrt(dx * dx + dy * dy);
                     if (speed < minSpeed || speed > maxSpeed) {
                         // 무작위 속도를 설정
@@ -581,11 +582,11 @@
             var rankings = getLocalRankings();
             var rankingBoard = document.getElementById("rankingBoard");
             rankingBoard.style.display = "block";
-            rankingBoard.innerHTML = "<h2>Ranking Board</h2>";
+            rankingBoard.innerHTML = "<h2>명예의 전당</h2>";
             rankings.forEach((entry, index) => {
                 var entryElement = document.createElement("div");
                 entryElement.className = "rank";
-                entryElement.innerHTML = `<span class="name">${index + 1}. ${entry.name}</span><span class="time">${entry.elapsedTime} seconds</span>`;
+                entryElement.innerHTML = `<span class="name"><${index + 1}등> ${entry.name}</span><span class="time">${entry.elapsedTime} 초</span>`;
                 rankingBoard.appendChild(entryElement);
             });
         }
@@ -598,7 +599,7 @@
             data.forEach((entry, index) => {
                 var entryElement = document.createElement("div");
                 entryElement.className = "rank";
-                entryElement.innerHTML = `<span class="name">${index + 1}. ${entry.name}</span><span class="time">${entry.elapsedTime} 초</span>`;
+                entryElement.innerHTML = `<span class="name"><${index + 1}등> ${entry.name}</span><span class="time">${entry.elapsedTime} 초</span>`;
                 rankingBoard.appendChild(entryElement);
             });
         }
