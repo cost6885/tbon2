@@ -669,10 +669,9 @@
             fetch('http://test.danhone.shop:8000/result_data', {
                 method: 'POST',
                 headers: {
-                    "Content-Type": "text/plain;charset=utf-8",
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(data),
-                mode: 'no-cors' // CORS 모드 설정
+                body: JSON.stringify(data)
             })
             .then(response => {
                 if (response.ok) {
