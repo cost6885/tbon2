@@ -184,7 +184,7 @@
 
             document.addEventListener("keydown", keyDownHandler, false);
             document.addEventListener("keyup", keyUpHandler, false);
-            canvas.addEventListener("click", handleCanvasClick);
+            
         });
 
         function showLoadingScreen() {
@@ -510,30 +510,29 @@
         }
 
         function displayLocalRankingBoard() {
-            var rankings = getLocalRankings();
-            var rankingBoard = document.getElementById("rankingBoard");
-            rankingBoard.style.display = "block";
-            rankingBoard.innerHTML = "<h2>명예의 전당</h2>";
-            rankings.forEach((entry, index) => {
-                var entryElement = document.createElement("div");
-                entryElement.className = "rank";
-                entryElement.innerHTML = `<span class="name"><${index + 1}등> ${entry.name}</span><span class="time">${entry.elapsedTime} 초</span>`;
-                rankingBoard.appendChild(entryElement);
-            });
+            fetchGoogleSheetsData();
         }
 
-        function handleCanvasClick(e) {
-            if (successMessageShown) {
-                var rect = canvas.getBoundingClientRect
-                var clickX = e.clientX - rect.left;
-                var clickY = e.clientY - rect.top;
-
-                if (clickX >= imageX && clickX <= imageX + imageWidth &&
-                    clickY >= imageY && clickY <= imageY + imageHeight) {
-                    window.location.href = "https://forms.gle/Xp9Ze8THK1MVWx78A";
-                }
-            }
+        function fetchGoogleSheetsData() {
+            fetch('https://script.google.com/macros/s/AKfycbyPEwjZam32EJMiCBXLfvAarVZA7xV1eXmDB3wmvkQ_HBeyqI_HntVoRFSpvPtUCB-Mqg/exec')
+                .then(response => response.json())
+                .then(data => {
+                    var rankingBoard = document.getElementById("rankingBoard");
+                    rankingBoard.style.display = "block";
+                    rankingBoard.innerHTML = "<h2>명예의 전당</h2>";
+                    data.forEach((entry, index) => {
+                        var entryElement = document.createElement("div");
+                        entryElement.className = "rank";
+                        entryElement.innerHTML = `<span class="name"><${index + 1}등> ${entry.name}</span><span class="time">${entry.elapsedTime} 초</span>`;
+                        rankingBoard.appendChild(entryElement);
+                    });
+                })
+                .catch((error) => {
+                    console.error('Error fetching data:', error);
+                });
         }
+
+        
 
     </script>
 </body>
