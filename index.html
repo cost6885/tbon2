@@ -513,7 +513,7 @@
         }
 
         function displayLocalRankingBoard() {
-          fetch('https://script.google.com/macros/s/AKfycby298kIKYPY048Pzt-JD-Ebs5atBTzZ-yfbf8GuvaR0YQFVesedPiVAmaMqRn8AHGj1qA/exec', {
+          fetch('https://script.google.com/macros/s/AKfycbzuIRLr_hONjA55u9QUeKvgXy_8CW9vkMCVvfrVqDXbATaiJrV7T0rrPxxB855CKuUOLA/exec', {
             mode: 'cors'
           })
           .then(response => {
@@ -523,10 +523,12 @@
             return response.json();
           })
           .then(data => {
+            console.log(data); // 받아온 데이터를 콘솔에 출력하여 확인합니다.
             var rankingBoard = document.getElementById("rankingBoard");
             rankingBoard.style.display = "block";
             rankingBoard.innerHTML = "<h2>명예의 전당</h2>";
-            data.forEach((entry, index) => {
+            // 데이터를 처리할 때 첫 번째 항목을 제거한 후 처리합니다.
+            data.slice(0).forEach((entry, index) => {
               var entryElement = document.createElement("div");
               entryElement.className = "rank";
               entryElement.innerHTML = `<span class="name">${index + 1}등 ${entry.name} (${entry.company})</span><span class="time">${entry.elapsedTime} 초</span>`;
@@ -537,7 +539,6 @@
             console.error('Error fetching data:', error);
           });
         }
-
 
         
 
