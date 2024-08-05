@@ -218,7 +218,10 @@
 
         function restartGame() {
             document.getElementById("formContainer").style.display = "none";
-            startGame();
+            initGame();
+            gameStarted = true;
+            startTime = Date.now();
+            draw();
         }
 
         function keyDownHandler(e) {
