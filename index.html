@@ -84,7 +84,7 @@
             padding: 20px;
             border-radius: 10px;
             display: none;
-            background-color: rgba(255, 255, 255, 0.5);
+            background-color: rgba(255, 255, 255, 0.2);
             color: black;
             font-weight: bold;
             font-family: 'Nanum Gothic', 'Malgun Gothic', sans-serif;
@@ -120,13 +120,13 @@
 </head>
 <body>
     <div id="gameDescription">
-        <p>과연 너구리씨🦝는 나무🌳에 열린 제품들을 가지고</p>
+        <p>과연 너구리씨🦝는 라면들을 가지고</p>
         <p>저녁식사 시간⏱ 전에 돌아 갈 수 있을까요?</p>
         <p>단짝친구 다시마들이 도와줄테니 너무 걱정마세요^^</p>
         <p>Tip❗ 다시마가 울퉁불퉁하니 점프에 주의</p>
         <p>'게임 시작' 버튼을 클릭👆하세요.</p>
-        <p>💥랭킹 1~3등💥 특별한 상품</p>
-        <p>👩참여자 추첨 7명👨 너구리큰사발 1Box</p>
+        <p>💥랭킹 1~3등💥 너구리 멀티팩(40입) / 너구리컵(30입) / 카구리큰사발(16입)</p>
+        <p>👩참여자 추첨 7명👨 누들핏 카구리맛(8입)</p>
     </div>
     
     <div id="formContainer">
@@ -146,7 +146,7 @@
     <button id="startButton" onclick="startGame()">게임 시작</button>
 
     <script>
-        var canvas, ctx, ballRadius = 10, x, y, dx = 7, dy = -7, paddleHeight = 47, paddleWidth = 120, paddleX;
+        var canvas, ctx, ballRadius = 10, x, y, dx = 7, dy = -7, paddleHeight = 47, paddleWidth = 200, paddleX;
         var rightPressed = false, leftPressed = false;
         var brickRowCount = 2, brickColumnCount = 6, brickWidth = 100, brickHeight = 108, brickPadding = 0, brickOffsetTop = 20, brickOffsetLeft = 20;
         var bricks = [], score = 0, gameStarted = false, startTime, elapsedTime;
@@ -168,7 +168,7 @@
             ballImage.src = "https://www.hushwish.com/wp-content/uploads/2023/09/emot_guri013.gif";
 
             canvasImage = new Image();
-            canvasImage.src = 'https://i.pinimg.com/736x/9d/dc/37/9ddc37cb811c8fe8c6c7ad0211322ea8.jpg';
+            canvasImage.src = 'https://brand.nongshim.com/resources/images/nuguri/nuguriImg01.jpg';
 
             canvasImage.onload = function() {
                 ctx.globalAlpha = 0.9;
