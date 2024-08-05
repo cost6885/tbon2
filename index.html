@@ -529,7 +529,7 @@
             data.forEach((entry, index) => {
               var entryElement = document.createElement("div");
               entryElement.className = "rank";
-              entryElement.innerHTML = `<span class="name"><${index + 1}등> ${entry.name}</span><span class="time">${entry.elapsedTime} 초</span>`;
+              entryElement.innerHTML = `<span class="name">${index + 1}등 ${entry.name} (${entry.company})</span><span class="time">${entry.elapsedTime} 초</span>`;
               rankingBoard.appendChild(entryElement);
             });
           })
@@ -537,7 +537,6 @@
             console.error('Error fetching data:', error);
           });
         }
-
 
 
         
