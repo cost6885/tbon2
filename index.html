@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
+<head>https://github.com/cost6885/tbon2/blob/main/index.html
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>너구리를 가져와</title>
@@ -627,6 +627,26 @@
                 rankingBoard.appendChild(entryElement);
             });
         }
+
+
+        function fetchGoogleSheetsData() {
+            fetch('https://script.google.com/macros/s/AKfycbyPEwjZam32EJMiCBXLfvAarVZA7xV1eXmDB3wmvkQ_HBeyqI_HntVoRFSpvPtUCB-Mqg/exec')
+            .then(response => response.json())
+            .then(data => {
+                var rankingBoard = document.getElementById("rankingBoard");
+                rankingBoard.innerHTML = "<h2>명예의 전당</h2>";
+                data.forEach((entry, index) => {
+                    var entryElement = document.createElement("div");
+                    entryElement.className = "rank";
+                    entryElement.innerHTML = `<span class="name"><${index + 1}등> ${entry.name}</span><span class="time">${entry.elapsedTime} 초</span>`;
+                    rankingBoard.appendChild(entryElement);
+                });
+            })
+            .catch((error) => {
+                console.error('Error fetching data:', error);
+            });
+        }
+        
 
         function sendToGoogleSheets() {
             var company = document.getElementById("company").value;
