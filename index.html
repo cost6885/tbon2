@@ -511,7 +511,12 @@
 
         function displayLocalRankingBoard() {
             fetch('https://script.google.com/macros/s/AKfycbyPEwjZam32EJMiCBXLfvAarVZA7xV1eXmDB3wmvkQ_HBeyqI_HntVoRFSpvPtUCB-Mqg/exec')
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     var rankingBoard = document.getElementById("rankingBoard");
                     rankingBoard.style.display = "block";
@@ -527,6 +532,7 @@
                     console.error('Error fetching data:', error);
                 });
         }
+
         
 
     </script>
