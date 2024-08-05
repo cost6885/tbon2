@@ -369,7 +369,7 @@
             if (y + dy > canvas.height - paddleHeight - enlargedBallRadius) {
                 if (x > paddleX && x < paddleX + paddleWidth) {
                     dy = -dy;
-                    var randAngle = (Math.random() - 0.5) * 40;
+                    var randAngle = (Math.random() - 0.5) * 80;
                     dx += randAngle;
 
                     var angle = Math.atan2(dy, dx);
