@@ -194,11 +194,11 @@
         
         function initGame() {
             console.log("Initializing game...");
-            paddleX = canvas.width / 3; // 패들의 초기 위치를 캔버스의 3분의 1 지점으로 설정
-            x = paddleX + paddleWidth / 2; // 공의 초기 위치를 패들의 중앙 위로 설정
+            x = canvas.width / 3; // 공의 초기 위치를 캔버스의 3분의 1 지점으로 설정
             y = canvas.height - paddleHeight - enlargedBallRadius; // 패들 위로 공의 초기 위치 설정
             dx = 7;
             dy = -7;
+            paddleX = (canvas.width - paddleWidth) / 3; // 패들의 초기 위치를 캔버스의 3분의 1 지점으로 설정
         
             bricks = [];
             for (var c = 0; c < brickColumnCount; c++) {
@@ -215,6 +215,7 @@
             elapsedTime = 0;
             console.log("Game initialized.");
         }
+
 
         function restartGame() {
             document.getElementById("formContainer").style.display = "none";
@@ -248,29 +249,37 @@
         }
 
         function drawSuccessMessage() {
+            console.log("Drawing success message...");
             ctx.fillStyle = "black";
             ctx.font = "24px Arial";
             ctx.textAlign = "center";
-            ctx.fillText("성공!", canvas.width / 2, imageY - 20);
-
+            ctx.fillText(`성공! ${elapsedTime}초`, canvas.width / 2, canvas.height / 2 - 20); // 화면 중앙에 메시지 출력
+        
+            // Calculate and store elapsed time
             var endTime = Date.now();
             elapsedTime = ((endTime - startTime) / 1000).toFixed(2);
             localStorage.setItem("elapsedTime", elapsedTime);
-
+        
+            // 새로운 기록을 저장
             var name = localStorage.getItem("name") || "Unknown";
-            var newEntry = { name: name, elapsedTime:
-elapsedTime };
-
+            var newEntry = { name: name, elapsedTime: parseFloat(elapsedTime) };
             saveLocalRanking(newEntry);
-
+        
+            // Display ranking board
             displayLocalRankingBoard();
-
+        
+            // Display event application form and button
+            document.getElementById("formContainer").style.display = "block";
+            document.getElementById("message").style.display = "block";
+            
             var messageElement = document.getElementById("message");
             messageElement.style.display = "block";
             messageElement.innerText = `성공! ${elapsedTime}초`;
-
+        
             successMessageShown = true;
+            console.log("Success message drawn.");
         }
+
 
         function drawBall() {
             ctx.drawImage(ballImage, x - enlargedBallRadius, y - enlargedBallRadius, enlargedBallRadius * 2, enlargedBallRadius * 2);
