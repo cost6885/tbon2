@@ -128,7 +128,7 @@
         <p>단짝친구 다시마들이 도와줄테니 너무 걱정마세요^^</p>
         <p>Tip❗ 다시마가 울퉁불퉁하니 점프에 주의</p>
         <p>'게임 시작' 버튼을 클릭👆하세요.</p>
-        <p> </p>
+        <br> </br>
         <p>🏆랭킹 1등🏆 너구리 멀티팩(40입)</p>
         <p>🥇랭킹 2등🥇 너구리컵(30입)</p>
         <p>🥈랭킹 3등🥈 카구리큰사발(16입)</p>
@@ -158,7 +158,7 @@
     </audio>
 
     <script>
-        var canvas, ctx, ballRadius = 10, x, y, dx = 7, dy = -7, paddleHeight = 47, paddleWidth = 200, paddleX;
+        var canvas, ctx, ballRadius = 10, x, y, dx = 6, dy = -6, paddleHeight = 47, paddleWidth = 200, paddleX;
         var rightPressed = false, leftPressed = false;
         var brickRowCount = 2, brickColumnCount = 6, brickWidth = 100, brickHeight = 108, brickPadding = 0, brickOffsetTop = 20, brickOffsetLeft = 20;
         var bricks = [], score = 0, gameStarted = false, startTime, elapsedTime;
@@ -387,7 +387,7 @@
                     }
 
                     var minSpeed = 10;
-                    var maxSpeed = 18;
+                    var maxSpeed = 15;
                     var speed = Math.sqrt(dx * dx + dy * dy);
                     if (speed < minSpeed || speed > maxSpeed) {
                         var randomSpeed = minSpeed + Math.random() * (maxSpeed - minSpeed);
