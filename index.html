@@ -193,10 +193,13 @@
         }
         
         function initGame() {
-            x = canvas.width / 2;
-            y = canvas.height - paddleHeight - enlargedBallRadius;
-            paddleX = (canvas.width - paddleWidth) / 5;
-
+            console.log("Initializing game...");
+            paddleX = canvas.width / 3; // 패들의 초기 위치를 캔버스의 3분의 1 지점으로 설정
+            x = paddleX + paddleWidth / 2; // 공의 초기 위치를 패들의 중앙 위로 설정
+            y = canvas.height - paddleHeight - enlargedBallRadius; // 패들 위로 공의 초기 위치 설정
+            dx = 7;
+            dy = -7;
+        
             bricks = [];
             for (var c = 0; c < brickColumnCount; c++) {
                 bricks[c] = [];
@@ -204,13 +207,13 @@
                     bricks[c][r] = { x: 0, y: 0, status: 1 };
                 }
             }
-
+        
             score = 0;
-            gameStarted = false;
-            elapsedTime = 0;
-
             document.getElementById("message").style.display = "none";
             document.getElementById("startMessage").style.display = "none";
+            gameStarted = false; // Ensure gameStarted is reset
+            elapsedTime = 0;
+            console.log("Game initialized.");
         }
 
         function restartGame() {
