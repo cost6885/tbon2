@@ -128,6 +128,7 @@
         <p>단짝친구 다시마들이 도와줄테니 너무 걱정마세요^^</p>
         <p>Tip❗ 다시마가 울퉁불퉁하니 점프에 주의</p>
         <p>'게임 시작' 버튼을 클릭👆하세요.</p>
+        <p> </p>
         <p>🏆랭킹 1등🏆 너구리 멀티팩(40입)</p>
         <p>🥇랭킹 2등🥇 너구리컵(30입)</p>
         <p>🥈랭킹 3등🥈 카구리큰사발(16입)</p>
@@ -149,6 +150,12 @@
     <div id="rankingBoard"></div>
 
     <button id="startButton" onclick="startGame()">게임 시작</button>
+
+
+    <audio id="bgm" autoplay loop>
+        <source src="your-bgm-file.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
 
     <script>
         var canvas, ctx, ballRadius = 10, x, y, dx = 7, dy = -7, paddleHeight = 47, paddleWidth = 200, paddleX;
