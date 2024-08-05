@@ -510,10 +510,6 @@
         }
 
         function displayLocalRankingBoard() {
-            fetchGoogleSheetsData();
-        }
-
-        function fetchGoogleSheetsData() {
             fetch('https://script.google.com/macros/s/AKfycbyPEwjZam32EJMiCBXLfvAarVZA7xV1eXmDB3wmvkQ_HBeyqI_HntVoRFSpvPtUCB-Mqg/exec')
                 .then(response => response.json())
                 .then(data => {
@@ -531,7 +527,6 @@
                     console.error('Error fetching data:', error);
                 });
         }
-
         
 
     </script>
