@@ -283,6 +283,9 @@
     
 
     <script>
+
+        var defaultCharacter = 'https://github.com/cost6885/tbon2/raw/main/image/racoon1.gif';
+        
         var canvas, ctx, ballRadius = 10, x, y, dx = 6, dy = -6, paddleHeight = 47, paddleWidth = 133, paddleX;
         var rightPressed = false, leftPressed = false;
         var brickRowCount = 2, brickColumnCount = 6, brickWidth = 100, brickHeight = 108, brickPadding = 0, brickOffsetTop = 20, brickOffsetLeft = 20;
@@ -294,6 +297,7 @@
         var difficultySelected = false;
         var difficulty = 'easy';
         var audio = document.getElementById('bgm');
+        ballImage.src = defaultCharacter;
 
         document.addEventListener("DOMContentLoaded", function() {
             showLoadingScreen();
@@ -355,9 +359,7 @@
             document.getElementById("prepare").style.display = "none";
             document.getElementById("exit").style.display = "none";
             document.getElementById("characterSelection").style.display = "block";
-            document.getElementById("difficultySelection").style.display = "block";
-            document.getElementById("startButton").style.display = "block";
-
+            document.getElementById("difficultySelection").style.display = "block";            
         }
 
         function selectCharacter(src) {
@@ -367,6 +369,7 @@
             event.target.classList.add('selected');
             checkStartCondition();
         }
+
 
         function selectDifficulty(level) {
             difficulty = level;
