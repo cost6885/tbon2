@@ -47,7 +47,7 @@
             display: none;
         }
 
-        #message, #startMessage {
+        #startMessage {
             text-align: center;
             font-size: 24px;
             position: absolute;
@@ -60,6 +60,21 @@
             color: white;
             display: none;
         }        
+
+
+        #message {
+            text-align: center;
+            font-size: 24px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            display: none;
+        }       
 
         #exit {
             text-align: center;
@@ -123,20 +138,19 @@
 
         
         #rankingBoard {
-            text-align: center;
+            text-align: left;
             font-size: 24px;
             position: absolute;
-            top: 40%;
+            top: 20%;
             left: 50%;
             transform: translate(-50%, -50%);
-            padding-top: 15px;    /* 상단 패딩 */
-            padding-right: 15px;  /* 우측 패딩 */
-            padding-bottom: 15px; /* 하단 패딩 */
-            padding-left: 15px;   /* 좌측 패딩 */
+            padding: 20px;
             border-radius: 10px;
             display: none;
             background-color: rgba(255, 255, 0, 0.5);
             color: black;
+            width: 80%;
+            max-width: 600px;
             font-weight: bold;
             font-family: 'Nanum Gothic', 'Malgun Gothic', sans-serif;
         }
@@ -559,8 +573,8 @@
                             dy = speed * Math.sin(angle);
                         }
         
-                        var minSpeed = 12;
-                        var maxSpeed = 24;
+                        var minSpeed = 10;
+                        var maxSpeed = 19;
                         var speed = Math.sqrt(dx * dx + dy * dy);
                         if (speed < minSpeed || speed > maxSpeed) {
                             var randomSpeed = minSpeed + Math.random() * (maxSpeed - minSpeed);
@@ -695,7 +709,7 @@
             saveLocalRanking(data);
             // Display ranking board
             document.getElementById("formContainer").style.display = "none";
-            document.getElementById("message").style.display = "none";
+            document.getElementById("message").style.display = "block";
 
             document.getElementById("gameCanvas").style.display = "none";
             document.getElementById("startMessage").style.display = "block";
