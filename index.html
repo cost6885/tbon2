@@ -64,15 +64,14 @@
 
         #message {
             text-align: center;
-            font-size: 24px;
+            font-size: 18px;
             position: absolute;
             top: 80%;
             left: 50%;
             transform: translate(-50%, -50%);
             padding: 20px;
-            border-radius: 10px;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
+            border-radius: 10px;            
+            color: black;
             display: none;
         }       
 
@@ -138,19 +137,16 @@
 
         
         #rankingBoard {
-            text-align: left;
+            text-align: center;
             font-size: 24px;
             position: absolute;
             top: 20%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            left: 50%;            
             padding: 20px;
             border-radius: 10px;
             display: none;
             background-color: rgba(255, 255, 0, 0.5);
             color: black;
-            width: 80%;
-            max-width: 600px;
             font-weight: bold;
             font-family: 'Nanum Gothic', 'Malgun Gothic', sans-serif;
         }
@@ -755,7 +751,7 @@
             data.slice(0).forEach((entry, index) => {
               var entryElement = document.createElement("div");
               entryElement.className = "rank";
-              entryElement.innerHTML = `<span class="name">${index + 1}등 ${entry.name}</span><span class="time">${entry.elapsedTime} 초</span>`;
+              entryElement.innerHTML = `<span class="name">${index + 1}등 ${entry.name} </span><span class="time">${entry.elapsedTime.toFixed(2)}초</span>`;
               rankingBoard.appendChild(entryElement);
             });
           })
