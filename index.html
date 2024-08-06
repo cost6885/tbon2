@@ -143,7 +143,7 @@
             text-align: center;
             font-size: 20px;
             position: absolute;
-            top: 20%;
+            top: 40%;
             left: 50%;            
             transform: translate(-50%, -50%);
             padding: 20px;
@@ -153,6 +153,7 @@
             color: black;
             font-weight: bold;
             font-family: 'Nanum Gothic', 'Malgun Gothic', sans-serif;
+            line-height: 1.6; /* 줄 간격 조절 */
         }
         
         .styled-button {
@@ -236,7 +237,9 @@
         <button class="styled-button" onclick="restartGame()">다시하기</button>
     </div>
     
-    <div id="loadingScreen"><p>로딩 중...</p></div>
+    <div id="loadingScreen">
+    <img src="https://github.com/cost6885/tbon2/raw/main/image/loading.gif">
+    </div>
     
     <canvas id="gameCanvas" width="640" height="600"></canvas>
     
@@ -673,17 +676,17 @@
             var employeeId = document.getElementById("employeeId").value;
             var name = document.getElementById("name").value;
             var elapsedTime = localStorage.getItem("elapsedTime");
-
+        
             var data = {
                 company: company,
                 employeeId: employeeId,
                 name: name,
                 elapsedTime: elapsedTime
             };
-
-            // const apiKey = 'A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6';
-            // const url = `https://script.google.com/macros/s/AKfycbxSmjnnyBUwu4ck3mU0V1IMOuVc7v0M_HcOHFGlhCYXY1ZYRx8n6hfKqgUYBDbbrAWOlw/exec?apiKey=${apiKey}`;
-
+        
+            // 로딩 스크린 표시
+            showLoadingScreen();
+        
             fetch('https://script.google.com/macros/s/AKfycbyswWzyoqno9M57sszIKFon6chfRVTswC0mzzixDp3FXGqChQdOquAZoNe1GTh2CsVbDg/exec', {
                 method: 'POST',
                 headers: {
@@ -704,22 +707,30 @@
             .catch((error) => {
                 console.error('Google Sheets 전송 에러:', error);
                 alert('이벤트 응모 중 오류가 발생했습니다.');
+            })
+            .finally(() => {
+                saveLocalRanking(data);
+                // 폼 입력 필드 초기화
+                document.getElementById("company").value = "";
+                document.getElementById("employeeId").value = "";
+                document.getElementById("name").value = "";
+        
+                // 폼과 메시지 표시 업데이트
+                document.getElementById("formContainer").style.display = "none";
+                document.getElementById("message").style.display = "block";
+        
+                document.getElementById("gameCanvas").style.display = "none";
+                document.getElementById("startMessage").style.display = "block";
+                document.getElementById("exit").style.display = "block";
+                
+                // 4초 딜레이 후 로딩 스크린 숨기고 랭킹 보드 표시
+                setTimeout(() => {
+                    hideLoadingScreen();
+                    displayLocalRankingBoard();
+                }, 4000); // 4000 밀리초 = 4초
             });
-
-            saveLocalRanking(data);
-            // Display ranking board
-            document.getElementById("formContainer").style.display = "none";
-            document.getElementById("message").style.display = "block";
-
-            document.getElementById("gameCanvas").style.display = "none";
-            document.getElementById("startMessage").style.display = "block";
-            document.getElementById("exit").style.display = "block";
-            document.getElementById("company").value = "";
-            document.getElementById("employeeId").value = "";
-            document.getElementById("name").value = "";
-            
-            displayLocalRankingBoard();
         }
+
 
         function getLocalRankings() {
             var rankings = JSON.parse(localStorage.getItem('rankings')) || [];
