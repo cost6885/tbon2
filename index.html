@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>수정ver2
+<head>수정ver3
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>너구리를 가져와</title>
@@ -136,6 +136,9 @@
             color: black;
             border: 2px solid #4CAF50;
         }
+        .ranking-section {
+            margin-top: 1em; /* 1em 여백 추가 */
+        }
     </style>
 </head>
 <body>
@@ -145,8 +148,7 @@
         <p>단짝친구 다시마들이 도와줄테니 너무 걱정마세요^^</p>
         <p>Tip❗ 다시마가 울퉁불퉁하니 점프에 주의</p>
         <p>'게임 시작' 버튼을 클릭👆하세요.</p>
-        <br></br>
-        <p>🏆랭킹 1등🏆 너구리 멀티팩(40입)</p>
+        <p class="ranking-section">🏆랭킹 1등🏆 너구리 멀티팩(40입)</p>
         <p>🥇랭킹 2등🥇 너구리컵(30입)</p>
         <p>🥈랭킹 3등🥈 카구리큰사발(16입)</p>
         <p>👥참여자 추첨(7명)👥 누들핏 카구리맛(8입)</p>
@@ -169,10 +171,7 @@
     <button id="startButton" onclick="startGame()">게임 시작</button>
 
 
-    <audio id="bgm" autoplay loop>
-        <source src="your-bgm-file.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
+    <iframe id="bgm" class="hidden-video" src="https://www.youtube.com/embed/qUtmokuS-mM?autoplay=1&loop=1&playlist=qUtmokuS-mM" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
     <script>
         var canvas, ctx, ballRadius = 10, x, y, dx = 6, dy = -6, paddleHeight = 47, paddleWidth = 133, paddleX;
@@ -307,10 +306,7 @@
             // 새로운 기록을 저장
             var name = localStorage.getItem("name") || "Unknown";
             var newEntry = { name: name, elapsedTime: parseFloat(elapsedTime) };
-            saveLocalRanking(newEntry);
-        
-            // Display ranking board
-            displayLocalRankingBoard();
+            saveLocalRanking(newEntry);        
         
             // Display event application form and button
             document.getElementById("formContainer").style.display = "block";
@@ -524,6 +520,9 @@
             });
 
             saveLocalRanking(data);
+            // Display ranking board
+            document.getElementById("formContainer").style.display = "none";
+            document.getElementById("message").style.display = "none";
             displayLocalRankingBoard();
         }
 
@@ -556,7 +555,7 @@
             console.log(data); // 받아온 데이터를 콘솔에 출력하여 확인합니다.
             var rankingBoard = document.getElementById("rankingBoard");
             rankingBoard.style.display = "block";
-            rankingBoard.innerHTML = "<h2>명예의 전당</h2>";
+            rankingBoard.innerHTML = "<h2>게임 랭킹</h2>";
             // 데이터를 처리할 때 첫 번째 항목을 제거한 후 처리합니다.
             data.slice(0).forEach((entry, index) => {
               var entryElement = document.createElement("div");
