@@ -66,7 +66,7 @@
             color: white;
         }
 
-        #startButton, #prepare {
+        #startButton, #prepare, #exit {
             text-align: center;
             font-size: 24px;
             position: absolute;
@@ -80,7 +80,7 @@
             display: none;
         }
 
-        #startButton, #prepare:hover {
+        #startButton, #prepare, #exit:hover {
             background-color: white;
             color: black;
             border: 2px solid #4CAF50;
@@ -199,10 +199,14 @@
         <button class="styled-button" onclick="sendToGoogleSheets()">이벤트 응모하기</button>
         <button class="styled-button" onclick="restartGame()">다시하기</button>
     </div>
+    
     <div id="loadingScreen"><p>로딩 중...</p></div>
+    
     <canvas id="gameCanvas" width="640" height="600"></canvas>
     
     <div id="startMessage" onclick="prapare()">다시 시작</div>
+
+    <div id="exit" onclick="closeWindow()">나가기</div>
 
     <div id="message"></div>
     
@@ -288,6 +292,11 @@
         });
 
 
+        function closeWindow() {
+            window.close();
+        }
+
+        
         function playAudio() {
             audio.play();
         }
@@ -304,6 +313,7 @@
             document.getElementById("rankingBoard").style.display = "none";
             document.getElementById("startMessage").style.display = "none";
             document.getElementById("prepare").style.display = "none";
+            document.getElementById("exit").style.display = "none";
             document.getElementById("characterSelection").style.display = "block";
             document.getElementById("difficultySelection").style.display = "block";
             document.getElementById("startButton").style.display = "block";
@@ -662,6 +672,7 @@
 
             document.getElementById("gameCanvas").style.display = "none";
             document.getElementById("startMessage").style.display = "block";
+            document.getElementById("exit").style.display = "block";
             document.getElementById("company").value = "";
             document.getElementById("employeeId").value = "";
             document.getElementById("name").value = "";
