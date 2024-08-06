@@ -137,7 +137,7 @@
             border: 2px solid #4CAF50;
         }
         .ranking-section {
-            margin-top: 1em; /* 1em 여백 추가 */
+            margin-top: 16px; 
         }
     </style>
 </head>
@@ -171,7 +171,11 @@
     <button id="startButton" onclick="startGame()">게임 시작</button>
 
 
-    <iframe id="bgm" class="hidden-video" src="https://www.youtube.com/embed/qUtmokuS-mM?autoplay=1&loop=1&playlist=qUtmokuS-mM" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    <!-- BGM 추가 -->
+    <audio id="bgm" autoplay loop>
+        <source src="your-bgm-file.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
 
     <script>
         var canvas, ctx, ballRadius = 10, x, y, dx = 6, dy = -6, paddleHeight = 47, paddleWidth = 133, paddleX;
