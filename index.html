@@ -272,10 +272,9 @@
                 ctx.globalAlpha = 0.9;
                 ctx.drawImage(canvasImage, 0, 0, canvas.width, canvas.height);
                 ctx.globalAlpha = 1;
-                hideLoadingScreen();
+                hideLoadingScreen();                
                 showStartButton();
-            
-                var audio = document.getElementById('bgm');
+                            
                 audio.play().catch(function(error) {
                     // 자동 재생 실패 시, 사용자 상호작용을 기다림
                     console.log('Auto-play prevented by browser:', error);
