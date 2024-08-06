@@ -73,6 +73,8 @@
             padding: 20px;
             border-radius: 10px;            
             color: black;
+            font-weight: bold;
+            font-family: 'Nanum Gothic', 'Malgun Gothic', sans-serif;
             display: none;
         }       
 
@@ -139,10 +141,11 @@
         
         #rankingBoard {
             text-align: center;
-            font-size: 24px;
+            font-size: 20px;
             position: absolute;
             top: 20%;
             left: 50%;            
+            transform: translate(-50%, -50%);
             padding: 20px;
             border-radius: 10px;
             display: none;
@@ -734,7 +737,7 @@
         }
 
         function displayLocalRankingBoard() {
-          fetch('https://script.google.com/macros/s/AKfycbzuIRLr_hONjA55u9QUeKvgXy_8CW9vkMCVvfrVqDXbATaiJrV7T0rrPxxB855CKuUOLA/exec', {
+          fetch('https://script.google.com/macros/s/AKfycbwuNc3Je7sJ1iaOE_Wxk9x_lfPdccCenupOcoPWWDAY0qQjvVdUusHOw8omEiFIAw9ZuQ/exec', {
             mode: 'cors'
           })
           .then(response => {
