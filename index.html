@@ -66,7 +66,7 @@
             color: white;
         }
 
-        #startButton {
+        #startButton, #selectCharacter {
             text-align: center;
             font-size: 24px;
             position: absolute;
@@ -80,7 +80,7 @@
             display: none;
         }
 
-        #startButton:hover {
+        #startButton, #selectCharacter:hover {
             background-color: white;
             color: black;
             border: 2px solid #4CAF50;
@@ -142,6 +142,20 @@
         .ranking-section {
             margin-top: 16px; 
         }
+        #characterSelection, #difficultySelection {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .character-option, .difficulty-option {
+            margin: 10px;
+            cursor: pointer;
+        }
+
+        .selected {
+            border: 2px solid red;
+        }
     </style>
 </head>
 <body>
@@ -171,8 +185,22 @@
     
     <div id="rankingBoard"></div>
 
+    <button id="selectCharacter" onclick="prapare()">준비하기</button>
+
     <button id="startButton" onclick="startGame()">게임 시작</button>
 
+    <div id="characterSelection">
+        <h3>캐릭터를 선택하세요</h3>
+        <img src="https://www.hushwish.com/wp-content/uploads/2023/09/emot_guri013.gif" class="character-option" onclick="selectCharacter('https://www.hushwish.com/wp-content/uploads/2023/09/emot_guri013.gif')">
+        <img src="https://www.hushwish.com/wp-content/uploads/2023/09/emot_guri014.gif" class="character-option" onclick="selectCharacter('https://www.hushwish.com/wp-content/uploads/2023/09/emot_guri014.gif')">
+    </div>
+
+    <div id="difficultySelection">
+        <h3>난이도를 선택하세요</h3>
+        <button class="difficulty-option styled-button" onclick="selectDifficulty('easy')">쉬움</button>
+        <button class="difficulty-option styled-button" onclick="selectDifficulty('hard')">어려움</button>
+    </div>
+    
 
     <!-- BGM 추가 -->
     <audio id="bgm" autoplay loop>
@@ -185,8 +213,12 @@
         var rightPressed = false, leftPressed = false;
         var brickRowCount = 2, brickColumnCount = 6, brickWidth = 100, brickHeight = 108, brickPadding = 0, brickOffsetTop = 20, brickOffsetLeft = 20;
         var bricks = [], score = 0, gameStarted = false, startTime, elapsedTime;
-        var brickImage, image, ballImage, canvasImage;
+        var brickImage, image, canvasImage;
         var enlargedBallRadius = ballRadius * 5;
+        var ballImage = new Image();
+        var characterSelected = false;
+        var difficultySelected = false;
+        var difficulty = 'easy';
 
         document.addEventListener("DOMContentLoaded", function() {
             showLoadingScreen();
@@ -222,6 +254,50 @@
             
         });
 
+
+        function prapare() {
+            document.getElementById("gameDescription").style.display = 'none';
+            document.getElementById("formContainer").style.display = "none";
+            document.getElementById("gameCanvas").style.display = "block";
+            document.getElementById("rankingBoard").style.display = "none";
+            document.getElementById("startMessage").style.display = "none";
+            document.getElementById("startButton").style.display = "none";
+
+            var company = document.getElementById("company").value;
+            var employeeId = document.getElementById("employeeId").value;
+            var name = document.getElementById("name").value;
+            localStorage.setItem("company", company);
+            localStorage.setItem("employeeId", employeeId);
+            localStorage.setItem("name", name);
+
+            initGame();
+            gameStarted = true;
+            startTime = Date.now();
+            draw();
+        }
+
+        function selectCharacter(src) {
+            ballImage.src = src;
+            characterSelected = true;
+            document.querySelectorAll('.character-option').forEach(el => el.classList.remove('selected'));
+            event.target.classList.add('selected');
+            checkStartCondition();
+        }
+
+        function selectDifficulty(level) {
+            difficulty = level;
+            difficultySelected = true;
+            document.querySelectorAll('.difficulty-option').forEach(el => el.classList.remove('selected'));
+            event.target.classList.add('selected');
+            checkStartCondition();
+        }
+
+        function checkStartCondition() {
+            if (characterSelected && difficultySelected) {
+                document.getElementById('startButton').style.display = 'block';
+            }
+        }
+        
         function showLoadingScreen() {
             document.getElementById("loadingScreen").style.display = "block";
         }
@@ -389,30 +465,43 @@
             if (y + dy > canvas.height - paddleHeight - enlargedBallRadius) {
                 if (x > paddleX && x < paddleX + paddleWidth) {
                     dy = -dy;
-                    var randAngle = (Math.random() - 0.5) * 80;
-                    dx += randAngle;
 
-                    var angle = Math.atan2(dy, dx);
-                    var minAngle = Math.PI / 6;
+                    if (difficulty === 'hard') {
+                        var randAngle = (Math.random() - 0.5) * 40;
+                        dx += randAngle;
 
-                    if (Math.abs(angle) < minAngle) {
-                        if (angle < 0) {
-                            angle = -minAngle;
-                        } else {
-                            angle = minAngle;
+                        var angle = Math.atan2(dy, dx);
+                        var minAngle = Math.PI / 6;
+
+                        if (Math.abs(angle) < minAngle) {
+                            if (angle < 0) {
+                                angle = -minAngle;
+                            } else {
+                                angle = minAngle;
+                            }
+                            var speed = Math.sqrt(dx * dx + dy * dy);
+                            dx = speed * Math.cos(angle);
+                            dy = speed * Math.sin(angle);
                         }
-                        var speed = Math.sqrt(dx * dx + dy * dy);
-                        dx = speed * Math.cos(angle);
-                        dy = speed * Math.sin(angle);
-                    }
 
-                    var minSpeed = 10;
-                    var maxSpeed = 15;
-                    var speed = Math.sqrt(dx * dx + dy * dy);
-                    if (speed < minSpeed || speed > maxSpeed) {
-                        var randomSpeed = minSpeed + Math.random() * (maxSpeed - minSpeed);
-                        dx = (dx / speed) * randomSpeed;
-                        dy = (dy / speed) * randomSpeed;
+                        var minSpeed = 10;
+                        var maxSpeed = 20;
+                        var speed = Math.sqrt(dx * dx + dy * dy);
+                        if (speed < minSpeed || speed > maxSpeed) {
+                            var randomSpeed = minSpeed + Math.random() * (maxSpeed - minSpeed);
+                            dx = (dx / speed) * randomSpeed;
+                            dy = (dy / speed) * randomSpeed;
+                        }
+                    } else {
+                        // 쉬움 난이도에서는 속도를 줄이고 각도 변경을 하지 않습니다.
+                        var minSpeed = 5;
+                        var maxSpeed = 7;
+                        var speed = Math.sqrt(dx * dx + dy * dy);
+                        if (speed < minSpeed || speed > maxSpeed) {
+                            var randomSpeed = minSpeed + Math.random() * (maxSpeed - minSpeed);
+                            dx = (dx / speed) * randomSpeed;
+                            dy = (dy / speed) * randomSpeed;
+                        }
                     }
 
                     y = canvas.height - paddleHeight - enlargedBallRadius;
@@ -432,6 +521,8 @@
             document.getElementById("rankingBoard").style.display = "none";
             document.getElementById("startMessage").style.display = "none";
             document.getElementById("startButton").style.display = "none";
+            document.getElementById('characterSelection').style.display = 'none';
+            document.getElementById('difficultySelection').style.display = 'none';
 
             var company = document.getElementById("company").value;
             var employeeId = document.getElementById("employeeId").value;
