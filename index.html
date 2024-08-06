@@ -66,7 +66,7 @@
             color: white;
         }
 
-        #startButton, #selectCharacter {
+        #startButton, #prepare {
             text-align: center;
             font-size: 24px;
             position: absolute;
@@ -80,7 +80,7 @@
             display: none;
         }
 
-        #startButton, #selectCharacter:hover {
+        #startButton, #prepare:hover {
             background-color: white;
             color: black;
             border: 2px solid #4CAF50;
@@ -178,7 +178,7 @@
         <p>저녁식사 시간⏱ 전에 돌아 갈 수 있을까요?</p>
         <p>단짝친구 다시마들이 도와줄테니 너무 걱정마세요^^</p>
         <p>Tip❗ 다시마가 울퉁불퉁하니 점프에 주의</p>
-        <p class="game-start">'게임 시작' 버튼을 클릭👆하세요.</p> <!-- 여백 추가 -->
+        <p class="game-start">'준비하기' 버튼을 클릭👆하세요.</p> <!-- 여백 추가 -->
         <p class="ranking-section">🏆랭킹 1등🏆 너구리 멀티팩(40입)</p>
         <p>🥇랭킹 2등🥇 너구리컵(30입)</p>
         <p>🥈랭킹 3등🥈 카구리큰사발(16입)</p>
@@ -201,7 +201,7 @@
     
     <div id="rankingBoard"></div>
 
-    <button id="selectCharacter" onclick="prapare()">준비하기</button>
+    <button id="prepare" onclick="prapare()">준비하기</button>
 
     <div id="characterSelection">
         <h3>캐릭터를 선택하세요</h3>
@@ -266,6 +266,7 @@
             document.getElementById("gameCanvas").style.display = "none";
             document.getElementById("rankingBoard").style.display = "none";
             document.getElementById("startMessage").style.display = "none";
+            document.getElementById("prepare").style.display = "none";
             document.getElementById("characterSelection").style.display = "block";
             document.getElementById("difficultySelection").style.display = "block";
             document.getElementById("startButton").style.display = "block";
@@ -303,7 +304,7 @@
         }
 
         function showStartButton() {
-            document.getElementById('selectCharacter').style.display = 'block';
+            document.getElementById('prepare').style.display = 'block';
             document.getElementById('gameDescription').style.display = 'block';
         }
 
@@ -332,7 +333,7 @@
             score = 0;
             document.getElementById("message").style.display = "none";
             document.getElementById("startMessage").style.display = "none";
-            document.getElementById('selectCharacter').style.display = 'none';
+            document.getElementById('prepare').style.display = 'none';
             document.getElementById("characterSelection").style.display = "none";
             gameStarted = false; // Ensure gameStarted is reset
             elapsedTime = 0;
