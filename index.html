@@ -494,8 +494,8 @@
                             dy = speed * Math.sin(angle);
                         }
 
-                        var minSpeed = 15;
-                        var maxSpeed = 30;
+                        var minSpeed = 12;
+                        var maxSpeed = 24;
                         var speed = Math.sqrt(dx * dx + dy * dy);
                         if (speed < minSpeed || speed > maxSpeed) {
                             var randomSpeed = minSpeed + Math.random() * (maxSpeed - minSpeed);
