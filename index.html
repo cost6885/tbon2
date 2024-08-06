@@ -220,10 +220,13 @@
     </div>
 
     <!-- BGM 추가 -->
-    <audio id="bgm" autoplay loop>
+    <audio id="bgm" loop>
         <source src="https://firebasestorage.googleapis.com/v0/b/driven-cabinet-381405.appspot.com/o/%5BRoyalty%20Free%20Music%5D%20Ponpoko%20(8bit%20game%20retro).mp3?alt=media&token=d99399f7-fd8f-4d65-87bd-0c70ffc37bf3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
+
+    <!-- 버튼 추가 -->
+    <button onclick="playAudio()">🎵</button>
 
     <script>
         var canvas, ctx, ballRadius = 10, x, y, dx = 6, dy = -6, paddleHeight = 47, paddleWidth = 133, paddleX;
@@ -269,6 +272,11 @@
         });
 
 
+        function playAudio() {
+            var audio = document.getElementById('bgm');
+            audio.play();
+        }
+        
         function prapare() {
             document.getElementById("gameDescription").style.display = 'none';
             document.getElementById("formContainer").style.display = "none";
