@@ -170,6 +170,11 @@
             text-align: center;
             margin-top: 20px;
         }
+        #audioControls {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+        }        
     </style>
 </head>
 <body>
@@ -219,14 +224,17 @@
         <button id="startButton" class="styled-button" onclick="startGame()">게임 시작</button>
     </div>
 
+    <div id="audioControls">
+        <button onclick="playAudio()">🔊</button>
+        <button onclick="pauseAudio()">🔈</button>
+    </div>
+
     <!-- BGM 추가 -->
     <audio id="bgm" loop>
         <source src="https://firebasestorage.googleapis.com/v0/b/driven-cabinet-381405.appspot.com/o/%5BRoyalty%20Free%20Music%5D%20Ponpoko%20(8bit%20game%20retro).mp3?alt=media&token=d99399f7-fd8f-4d65-87bd-0c70ffc37bf3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
-
-    <!-- 버튼 추가 -->
-    <button onclick="playAudio()">🎵</button>
+    
 
     <script>
         var canvas, ctx, ballRadius = 10, x, y, dx = 6, dy = -6, paddleHeight = 47, paddleWidth = 133, paddleX;
@@ -239,6 +247,7 @@
         var characterSelected = false;
         var difficultySelected = false;
         var difficulty = 'easy';
+        var audio = document.getElementById('bgm');
 
         document.addEventListener("DOMContentLoaded", function() {
             showLoadingScreen();
@@ -260,6 +269,10 @@
                 ctx.globalAlpha = 1;
                 hideLoadingScreen();
                 showStartButton();
+                
+                audio.play().catch(function(error) {
+                // 자동 재생 실패 시, 사용자 상호작용을 기다림
+                console.log('Auto-play prevented by browser:', error);
             };
 
             brickImage.onload = function() {
@@ -273,9 +286,13 @@
 
 
         function playAudio() {
-            var audio = document.getElementById('bgm');
             audio.play();
         }
+
+        function pauseAudio() {
+            audio.pause();
+            audio.currentTime = 0;  // 재생 위치를 처음으로 돌림
+        }            
         
         function prapare() {
             document.getElementById("gameDescription").style.display = 'none';
