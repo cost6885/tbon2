@@ -47,10 +47,12 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            padding-top: 15px;    /* 상단 패딩 */
-            padding-right: 10px;  /* 우측 패딩 */
-            padding-bottom: 15px; /* 하단 패딩 */
-            padding-left: 10px;   /* 좌측 패딩 */
+            padding-top: 30px;    /* 상단 패딩 */
+            padding-right: 20px;  /* 우측 패딩 */
+            padding-bottom: 30px; /* 하단 패딩 */
+            padding-left: 20px;   /* 좌측 패딩 */
+            width: 80%;           /* 너비 조정 */
+            max-width: 600px;     /* 최대 너비 설정 */
             border-radius: 10px;
             background-color: rgba(0, 0, 0, 0.7);
             color: white;
@@ -102,7 +104,7 @@
             text-align: center;
             font-size: 18px;
             position: absolute;
-            top: 80%;
+            top: 90%;
             left: 50%;
             transform: translate(-50%, -50%);
             padding: 20px;
@@ -785,7 +787,7 @@
             console.log(data); // 받아온 데이터를 콘솔에 출력하여 확인합니다.
             var rankingBoard = document.getElementById("rankingBoard");
             rankingBoard.style.display = "block";
-            rankingBoard.innerHTML = "<h2>게임 랭킹</h2>";
+            rankingBoard.innerHTML = "<h2>🏆게임 랭킹🏆</h2>";
             // 데이터를 처리할 때 첫 번째 항목을 제거한 후 처리합니다.
             data.slice(0).forEach((entry, index) => {
               var entryElement = document.createElement("div");
