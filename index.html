@@ -417,8 +417,7 @@
             document.getElementById("prepare").style.display = "none";
             document.getElementById("exit").style.display = "none";
             document.getElementById("characterSelection").style.display = "block";
-            document.getElementById("difficultySelection").style.display = "block";    
-            updateDifficultySelection();
+            document.getElementById("difficultySelection").style.display = "block";                
         }
 
         function selectCharacter(src) {
@@ -442,7 +441,7 @@
             if (characterSelected && difficultySelected) {
                 document.getElementById('startButton').style.display = 'block';
             }
-            if (gameCount >= 3) {
+            if (gamecount >= 3) {
                 document.getElementById('challengeButton').style.display = 'inline-block';
             }
         }
