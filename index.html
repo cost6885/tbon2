@@ -338,12 +338,15 @@
     </audio>
 
 
-    <img id="fallingItem" src="https://github.com/cost6885/tbon2/raw/main/image/myun.png" style="display: none; position: absolute; width: 50px; height: 50px;" alt="Falling Item">
+    <img id="fallingItem" src="https://github.com/cost6885/tbon2/raw/main/image/myun.png" style="display: none; position: absolute; width: 70px; height: 70px;" alt="Falling Item">
     
 
     <script>
 
         var defaultCharacter = 'https://github.com/cost6885/tbon2/raw/main/image/racoon1.gif';
+
+        var totalItems = Math.floor(Math.random() * 5) + 1; // 1에서 5 사이의 랜덤한 수
+        var generatedItems = 0;
 
         var item, itemX, itemY, itemFalling = false, itemCaught = false;
 
@@ -668,10 +671,13 @@
         
                             b.status = 0;
                             score++;
-                            
-                            // 무작위로 특정 블럭을 깨면 아이템 생성
-                            if (Math.random() < 0.2 && !fallingItemData) { // 10% 확률로 아이템 생성
+        
+                            // 고정된 블럭에서 아이템 생성
+                            if (c == 2 && r == 1 && generatedItems < totalItems) {
+                                generatedItems++;
                                 fallingItemData = { x: b.x + brickWidth / 2 - itemWidth / 2, y: b.y, dy: 2 };
+                                fallingItem.style.left = `${fallingItemData.x}px`;
+                                fallingItem.style.top = `${fallingItemData.y}px`;
                                 fallingItem.style.display = 'block';
                             }
         
@@ -686,14 +692,14 @@
         
             if (fallingItemData) {
                 fallingItemData.y += fallingItemData.dy;
-                fallingItem.style.left = `${fallingItemData.x}px`;
                 fallingItem.style.top = `${fallingItemData.y}px`;
         
                 if (fallingItemData.y + itemHeight > canvas.height - paddleHeight && fallingItemData.x > paddleX && fallingItemData.x < paddleX + paddleWidth) {
                     fallingItemData = null; // 아이템 잡기 성공
                     fallingItem.style.display = 'none';
                 } else if (fallingItemData.y + itemHeight > canvas.height) {
-                    gameOver(); // 아이템 잡기 실패, 게임 오버
+                    gameOver(); // 아이템 놓치기
+                    return;
                 }
             }
         
@@ -723,6 +729,7 @@
                 }
             }
         }
+
 
 
         
