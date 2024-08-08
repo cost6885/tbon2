@@ -242,18 +242,16 @@
             right: calc(50% - 320px); /* 화면 중앙에서 캔버스 너비의 절반을 조정 */
         }        
 
-        .challenge {
-            background-color: red; /* 버튼 배경색을 빨간색으로 설정 */
-            color: white; /* 글자색을 흰색으로 설정 */
-        }
-        
-        .challenge:hover {
-            background-color: darkred; /* 호버 시 배경색을 짙은 빨간색으로 설정 */
-            color: white; /* 호버 시 글자색을 흰색으로 유지 */
-            cursor: pointer; /* 호버 시 손가락 모양 커서 */
+        .difficulty-container {
+            display: flex;
+            justify-content: center; /* 중앙 정렬 */
+            gap: 10px; /* 버튼 사이의 간격 */
         }
 
-        
+        #challengeButton {
+            background-color: red; /* 시뻘건색 */
+        }
+                
     </style>
 </head>
 <body>
@@ -309,10 +307,13 @@
 
     <div id="difficultySelection">
         <h3>난이도를 선택하세요</h3>
-        <button class="difficulty-option styled-button" onclick="selectDifficulty('easy')">쉬움</button>
-        <button class="difficulty-option styled-button" onclick="selectDifficulty('hard')">어려움</button>
-        <button id="challengeButton" class="difficulty-option styled-button challenge" style="display: none;" onclick="selectDifficulty('challenge')">도전</button>
+        <div class="difficulty-container">
+            <button class="difficulty-option styled-button" onclick="selectDifficulty('easy')">쉬움</button>
+            <button class="difficulty-option styled-button" onclick="selectDifficulty('hard')">어려움</button>
+            <button id="challengeButton" class="difficulty-option styled-button" style="display: none;" onclick="selectDifficulty('challenge')">도전</button>
+        </div>
     </div>
+
 
     <div id="startButtonContainer">
         <button id="startButton" class="styled-button" onclick="startGame()">게임 시작</button>
@@ -391,14 +392,6 @@
             };
         });
 
-
-        function updateDifficultySelection() {
-            if (gamecount >= 3) {
-                document.getElementById('challengeButton').style.display = 'block';
-            } else {
-                document.getElementById('challengeButton').style.display = 'none';
-            }
-        }
                 
 
         function closeWindow() {
@@ -448,6 +441,9 @@
         function checkStartCondition() {
             if (characterSelected && difficultySelected) {
                 document.getElementById('startButton').style.display = 'block';
+            }
+            if (gameCount >= 3) {
+                document.getElementById('challengeButton').style.display = 'inline-block';
             }
         }
         
@@ -639,12 +635,18 @@
                     var b = bricks[c][r];
                     if (b.status == 1) {
                         if (x + dx > b.x && x + dx < b.x + brickWidth && y + dy > b.y && y + dy < b.y + brickHeight) {
-                            if (x + enlargedBallRadius > b.x && x - enlargedBallRadius < b.x + brickWidth) {
+                            var hitFromLeft = x + enlargedBallRadius > b.x && x - enlargedBallRadius < b.x;
+                            var hitFromRight = x + enlargedBallRadius > b.x + brickWidth && x - enlargedBallRadius < b.x + brickWidth;
+                            var hitFromTop = y + enlargedBallRadius > b.y && y - enlargedBallRadius < b.y;
+                            var hitFromBottom = y + enlargedBallRadius > b.y + brickHeight && y - enlargedBallRadius < b.y + brickHeight;
+        
+                            if (hitFromLeft || hitFromRight) {
                                 dx = -dx;
                             }
-                            if (y + enlargedBallRadius > b.y && y - enlargedBallRadius < b.y + brickHeight) {
+                            if (hitFromTop || hitFromBottom) {
                                 dy = -dy;
                             }
+        
                             b.status = 0;
                             score++;
                             if (score == brickRowCount * brickColumnCount) {
@@ -684,8 +686,10 @@
         }
         
         function adjustSpeed(minSpeed, maxSpeed, randAngleRange) {
-            var randAngle = (Math.random() - 0.5) * randAngleRange;
-            dx += randAngle;
+            if (randAngleRange > 0) {
+                var randAngle = (Math.random() - 0.5) * randAngleRange;
+                dx += randAngle;
+            }
         
             var angle = Math.atan2(dy, dx);
             var minAngle = Math.PI / 6;
