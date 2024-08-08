@@ -670,7 +670,7 @@
                             score++;
                             
                             // 무작위로 특정 블럭을 깨면 아이템 생성
-                            if (Math.random() < 0.1 && !fallingItemData) { // 10% 확률로 아이템 생성
+                            if (Math.random() < 0.2 && !fallingItemData) { // 10% 확률로 아이템 생성
                                 fallingItemData = { x: b.x + brickWidth / 2 - itemWidth / 2, y: b.y, dy: 2 };
                                 fallingItem.style.display = 'block';
                             }
@@ -814,9 +814,7 @@
                     dy = -dy;
                     y = canvas.height - paddleHeight - enlargedBallRadius;
                 } else {
-                    gameStarted = false;
-                    document.getElementById("startMessage").style.display = "block";
-                    successMessageShown = true;
+                    gameOver();
                     return;
                 }
             }
