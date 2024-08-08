@@ -673,12 +673,12 @@
                             b.status = 0;
                             score++;
         
-                            // 아이템 생성 코드
-                            if (totalItems > 0 && !fallingItemData) {
+                            // 블럭을 부쉈을 때 아이템 생성
+                            if (totalItems > 0) {
                                 fallingItemData = { x: b.x + brickWidth / 2 - itemWidth / 2, y: b.y, dy: 2 };
                                 fallingItem.style.display = 'block';
                                 totalItems--;
-                                console.log("Falling item generated. Items left: " + totalItems);
+                                console.log("Falling item generated at: ", b.x, b.y);
                             }
         
                             if (score == brickRowCount * brickColumnCount) {
@@ -729,6 +729,7 @@
                 }
             }
         }
+
 
 
 
