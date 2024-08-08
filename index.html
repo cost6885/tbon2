@@ -656,38 +656,39 @@
             for (var c = 0; c < brickColumnCount; c++) {
                 for (var r = 0; r < brickRowCount; r++) {
                     var b = bricks[c][r];
-                    // 블럭을 부쉈을 때 아이템 생성
                     if (b.status == 1) {
                         if (x + dx > b.x && x + dx < b.x + brickWidth && y + dy > b.y && y + dy < b.y + brickHeight) {
                             var hitFromLeft = x + enlargedBallRadius > b.x && x - enlargedBallRadius < b.x;
                             var hitFromRight = x + enlargedBallRadius > b.x + brickWidth && x - enlargedBallRadius < b.x + brickWidth;
                             var hitFromTop = y + enlargedBallRadius > b.y && y - enlargedBallRadius < b.y;
                             var hitFromBottom = y + enlargedBallRadius > b.y + brickHeight && y - enlargedBallRadius < b.y + brickHeight;
-                    
+        
                             if (hitFromLeft || hitFromRight) {
                                 dx = -dx;
                             }
                             if (hitFromTop || hitFromBottom) {
                                 dy = -dy;
                             }
-                    
+        
                             b.status = 0;
                             score++;
-                    
+        
                             // 아이템 생성 코드
-                            if (totalItems > 0) {
+                            if (totalItems > 0 && !fallingItemData) {
                                 fallingItemData = { x: b.x + brickWidth / 2 - itemWidth / 2, y: b.y, dy: 2 };
                                 fallingItem.style.display = 'block';
                                 totalItems--;
                                 console.log("Falling item generated. Items left: " + totalItems);
                             }
-                    
+        
                             if (score == brickRowCount * brickColumnCount) {
                                 gameStarted = false;
                                 drawSuccessMessage();
                             }
                         }
                     }
+                }
+            }
         
             // 아이템이 떨어지는 로직
             if (fallingItemData) {
@@ -728,6 +729,7 @@
                 }
             }
         }
+
 
 
 
