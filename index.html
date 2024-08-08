@@ -15,12 +15,8 @@
             margin: 0;
             background-color: #ffffff;
         }
-       canvas {
+        canvas {
             background: #ffd900;
-            width: 100%;
-            height: auto;
-            max-width: 640px;
-            max-height: 600px;
         }
         
         #loadingScreen {
@@ -340,63 +336,40 @@
             showLoadingScreen();
             canvas = document.getElementById("gameCanvas");
             ctx = canvas.getContext("2d");
-        
-            // 화면 크기에 따라 캔버스 크기 조정
-            window.addEventListener("resize", resizeCanvas);
-            resizeCanvas();
-        
+
             document.addEventListener("keydown", keyDownHandler);
             document.addEventListener("keyup", keyUpHandler);
             canvas.addEventListener("mousemove", mouseMoveHandler);
             canvas.addEventListener("touchmove", touchMoveHandler);
-        
+            
             brickImage = new Image();
             brickImage.src = "https://github.com/cost6885/tbon2/raw/main/image/block.png";
-        
+
             canvasImage = new Image();
             canvasImage.src = 'https://github.com/cost6885/tbon2/raw/main/image/ramenbg.jpg';
-        
+
             canvasImage.onload = function() {
                 ctx.globalAlpha = 0.9;
                 ctx.drawImage(canvasImage, 0, 0, canvas.width, canvas.height);
                 ctx.globalAlpha = 1;
-                hideLoadingScreen();
+                hideLoadingScreen();                
                 showStartButton();
-        
+                            
                 audio.play().catch(function(error) {
                     // 자동 재생 실패 시, 사용자 상호작용을 기다림
                     console.log('Auto-play prevented by browser:', error);
                 });
             };
-        
+
             brickImage.onload = function() {
                 // Brick image 로드 후 작업이 필요한 경우 여기에 작성
             };
-        
+
             ballImage.onload = function() {
                 // Ball image 로드 후 작업이 필요한 경우 여기에 작성
             };
-        
-            function resizeCanvas() {
-                const aspectRatio = 640 / 600;
-                const windowAspectRatio = window.innerWidth / window.innerHeight;
-        
-                if (windowAspectRatio > aspectRatio) {
-                    canvas.height = window.innerHeight;
-                    canvas.width = canvas.height * aspectRatio;
-                } else {
-                    canvas.width = window.innerWidth;
-                    canvas.height = canvas.width / aspectRatio;
-                }
-        
-                document.querySelectorAll('#formContainer, #gameDescription, #buttonContainer, #rankingBoard, #audioControls').forEach(function(el) {
-                    el.style.width = canvas.width + 'px';
-                });
-        
-                drawBackground();
-                draw();
-            }
         });
+
 
         function closeWindow() {
             window.close();
