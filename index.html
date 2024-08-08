@@ -81,6 +81,7 @@
             background-color: white;
             color: black;
             border: 2px solid #4CAF50;
+            cursor: pointer; /* 손가락 모양 커서 */
         }
 
         
@@ -138,6 +139,7 @@
             background-color: white;
             color: black;
             border: 2px solid #4CAF50;
+            cursor: pointer; /* 손가락 모양 커서 */
         }
         
        
@@ -196,6 +198,7 @@
             background-color: white;
             color: black;
             border: 2px solid #4CAF50;
+            cursor: pointer; /* 손가락 모양 커서 */
         }
         
         .game-start {
@@ -222,6 +225,7 @@
 
         .character-option:hover, .difficulty-option:hover {
             border-color: blue;
+            cursor: pointer; /* 손가락 모양 커서 */
         }
 
         .selected {
@@ -335,6 +339,8 @@
 
             document.addEventListener("keydown", keyDownHandler);
             document.addEventListener("keyup", keyUpHandler);
+            canvas.addEventListener("mousemove", mouseMoveHandler);
+            canvas.addEventListener("touchmove", touchMoveHandler);
             
             brickImage = new Image();
             brickImage.src = "https://github.com/cost6885/tbon2/raw/main/image/block.png";
@@ -491,6 +497,23 @@
                 leftPressed = false;
             }
         }
+
+        function mouseMoveHandler(e) {
+            var relativeX = e.clientX - canvas.offsetLeft;
+            if (relativeX > 0 && relativeX < canvas.width) {
+                paddleX = relativeX - paddleWidth / 2;
+            }
+        }
+        
+        function touchMoveHandler(e) {
+            var touch = e.touches[0];
+            var relativeX = touch.clientX - canvas.offsetLeft;
+            if (relativeX > 0 && relativeX < canvas.width) {
+                paddleX = relativeX - paddleWidth / 2;
+            }
+        }
+        
+        
 
         function drawSuccessMessage() {
             console.log("Drawing success message...");
