@@ -338,7 +338,7 @@
     </audio>
 
 
-    <img id="fallingItem" src="https://github.com/cost6885/tbon2/raw/main/image/myun.png" style="display: none; position: absolute; width: 70px; height: 70px;" alt="Falling Item">
+    <img id="fallingItem" src="https://github.com/cost6885/tbon2/raw/main/image/myun.png" style="display: none; position: absolute; width: 80px; height: 70px;" alt="Falling Item">
     
 
     <script>
@@ -511,6 +511,8 @@
             gameStarted = false; // Ensure gameStarted is reset
             elapsedTime = 0;
             totalItems = Math.floor(Math.random() * 5) + 1; // 총 아이템 수 1~5 사이로 설정
+            fallingItemData = null; // 아이템 데이터 초기화
+            fallingItem.style.display = 'none'; // 아이템 숨기기
             console.log("Game initialized.");
         }
 
@@ -782,18 +784,23 @@
             drawElapsedTime();
             collisionDetection();
         
-            if (itemFalling) {
-                itemY += 5;
-                if (itemY > canvas.height - paddleHeight - 50 && itemX > paddleX && itemX < paddleX + paddleWidth) {
-                    itemFalling = false;
-                    itemCaught = true;
-                    item.style.display = "none";
-                } else if (itemY > canvas.height - 50) {
-                    gameOver();
+            if (fallingItemData) {
+                fallingItemData.y += fallingItemData.dy;
+                if (fallingItemData.y > canvas.height - paddleHeight - itemHeight && fallingItemData.x > paddleX && fallingItemData.x < paddleX + paddleWidth) {
+                    // 아이템을 패들로 받았을 때
+                    fallingItemData = null;
+                    fallingItem.style.display = 'none';
+                    console.log("Item caught!");
+                } else if (fallingItemData.y > canvas.height - itemHeight) {
+                    // 아이템이 바닥에 닿았을 때
+                    gameStarted = false;
+                    fallingItem.style.display = 'none';
+                    document.getElementById("startMessage").style.display = "block";
+                    successMessageShown = true;
                     return;
                 } else {
-                    item.style.top = itemY + 'px';
-                    item.style.left = itemX + 'px';
+                    fallingItem.style.top = fallingItemData.y + 'px';
+                    fallingItem.style.left = fallingItemData.x + 'px';
                 }
             }
         
