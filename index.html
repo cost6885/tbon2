@@ -336,11 +336,16 @@
         <source src="https://firebasestorage.googleapis.com/v0/b/driven-cabinet-381405.appspot.com/o/%5BRoyalty%20Free%20Music%5D%20Ponpoko%20(8bit%20game%20retro).mp3?alt=media&token=d99399f7-fd8f-4d65-87bd-0c70ffc37bf3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
+
+
+    <img id="fallingItem" src="https://github.com/cost6885/tbon2/raw/main/image/myun.png" style="display: none; position: absolute; width: 50px; height: 50px;" alt="Falling Item">
     
 
     <script>
 
         var defaultCharacter = 'https://github.com/cost6885/tbon2/raw/main/image/racoon1.gif';
+
+        var item, itemX, itemY, itemFalling = false, itemCaught = false;
         
         var canvas, ctx, ballRadius = 10, x, y, dx = 6, dy = -6, paddleHeight = 47, paddleWidth = 133, paddleX;
         var rightPressed = false, leftPressed = false;
@@ -370,6 +375,8 @@
             canvas.addEventListener("touchstart", touchStartHandler);
             canvas.addEventListener("touchend", touchEndHandler);
             canvas.addEventListener("touchmove", touchMoveHandler);
+
+            item = document.getElementById("fallingItem");
             
             brickImage = new Image();
             brickImage.src = "https://github.com/cost6885/tbon2/raw/main/image/block.png";
@@ -656,6 +663,17 @@
         
                             b.status = 0;
                             score++;
+        
+                            if (Math.random() < 0.1) { // 10% 확률로 아이템 떨어뜨림
+                                itemFalling = true;
+                                itemCaught = false;
+                                itemX = b.x;
+                                itemY = b.y;
+                                item.style.left = itemX + 'px';
+                                item.style.top = itemY + 'px';
+                                item.style.display = 'block';
+                            }
+        
                             if (score == brickRowCount * brickColumnCount) {
                                 gameStarted = false;
                                 drawSuccessMessage();
@@ -684,13 +702,28 @@
         
                     y = canvas.height - paddleHeight - enlargedBallRadius;
                 } else if (y + dy > canvas.height - enlargedBallRadius) {
-                    gameStarted = false;
-                    document.getElementById("startMessage").style.display = "block";
-                    successMessageShown = true;
+                    gameOver();
                     return;
                 }
             }
+        
+            // 아이템이 떨어지는 경우의 로직
+            if (itemFalling) {
+                itemY += 5; // 아이템 낙하 속도 조정
+                item.style.top = itemY + 'px';
+        
+                if (itemY + itemHeight > canvas.height) {
+                    itemFalling = false;
+                    item.style.display = 'none';
+                    gameOver(); // 아이템을 놓치면 게임 오버
+                } else if (itemY + itemHeight > canvas.height - paddleHeight - 10 && itemX > paddleX && itemX < paddleX + paddleWidth) {
+                    itemFalling = false;
+                    item.style.display = 'none';
+                    itemCaught = true; // 아이템을 잡았을 때
+                }
+            }
         }
+
         
         function adjustSpeed(minSpeed, maxSpeed, randAngleRange) {
             if (randAngleRange > 0) {
@@ -746,15 +779,30 @@
 
         function draw() {
             if (!gameStarted) return;
-
+        
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             drawBackground();
             drawBricks();
             drawBall();
             drawPaddle();
-            collisionDetection();
             drawElapsedTime();
-
+            collisionDetection();
+        
+            if (itemFalling) {
+                itemY += 5;
+                if (itemY > canvas.height - paddleHeight - 50 && itemX > paddleX && itemX < paddleX + paddleWidth) {
+                    itemFalling = false;
+                    itemCaught = true;
+                    item.style.display = "none";
+                } else if (itemY > canvas.height - 50) {
+                    gameOver();
+                    return;
+                } else {
+                    item.style.top = itemY + 'px';
+                    item.style.left = itemX + 'px';
+                }
+            }
+        
             if (x + dx > canvas.width - enlargedBallRadius || x + dx < enlargedBallRadius) {
                 dx = -dx;
             }
@@ -771,21 +819,30 @@
                     return;
                 }
             }
-
+        
             if (rightPressed && paddleX < canvas.width - paddleWidth) {
                 paddleX += 7;
             } else if (leftPressed && paddleX > 0) {
                 paddleX -= 7;
             }
-
+        
             x += dx;
             y += dy;
-
+        
             if (gameStarted) {
                 requestAnimationFrame(draw);
             }
         }
 
+
+        function gameOver() {
+            gameStarted = false;
+            document.getElementById("startMessage").style.display = "block";
+            document.getElementById("exit").style.display = "block";
+            // 추가적으로 게임 오버 메시지를 띄우고 필요한 동작을 수행
+        }
+
+        
         function sendToGoogleSheets() {
             var company = document.getElementById("company").value;
             var employeeId = document.getElementById("employeeId").value;
