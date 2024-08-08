@@ -330,6 +330,7 @@
         var difficultySelected = false;
         var difficulty = 'easy';
         var audio = document.getElementById('bgm');
+        var isDragging = false;
         ballImage.src = defaultCharacter;
 
         document.addEventListener("DOMContentLoaded", function() {
@@ -339,7 +340,11 @@
 
             document.addEventListener("keydown", keyDownHandler);
             document.addEventListener("keyup", keyUpHandler);
+            canvas.addEventListener("mousedown", mouseDownHandler);
+            canvas.addEventListener("mouseup", mouseUpHandler);
             canvas.addEventListener("mousemove", mouseMoveHandler);
+            canvas.addEventListener("touchstart", touchStartHandler);
+            canvas.addEventListener("touchend", touchEndHandler);
             canvas.addEventListener("touchmove", touchMoveHandler);
             
             brickImage = new Image();
@@ -499,23 +504,42 @@
             }
         }
 
+        function mouseDownHandler(e) {
+            isDragging = true;
+        }
+        
+        function mouseUpHandler(e) {
+            isDragging = false;
+        }
+        
         function mouseMoveHandler(e) {
-            var relativeX = e.clientX - canvas.offsetLeft;
-            if (relativeX > 0 && relativeX < canvas.width) {
-                paddleX = relativeX - paddleWidth / 2;
+            if (isDragging) {
+                var relativeX = e.clientX - canvas.offsetLeft;
+                if (relativeX > 0 && relativeX < canvas.width) {
+                    paddleX = relativeX - paddleWidth / 2;
+                }
             }
+        }
+        
+        function touchStartHandler(e) {
+            isDragging = true;
+        }
+        
+        function touchEndHandler(e) {
+            isDragging = false;
         }
         
         function touchMoveHandler(e) {
-            var touch = e.touches[0];
-            var relativeX = touch.clientX - canvas.offsetLeft;
-            if (relativeX > 0 && relativeX < canvas.width) {
-                paddleX = relativeX - paddleWidth / 2;
+            if (isDragging) {
+                var touch = e.touches[0];
+                var relativeX = touch.clientX - canvas.offsetLeft;
+                if (relativeX > 0 && relativeX < canvas.width) {
+                    paddleX = relativeX - paddleWidth / 2;
+                }
             }
         }
-        
-        
 
+        
         function drawSuccessMessage() {
             console.log("Drawing success message...");
             ctx.fillStyle = "black";
@@ -610,10 +634,10 @@
                 if (x > paddleX && x < paddleX + paddleWidth) {
                     var hitPos = (x - paddleX) / paddleWidth;
                     var angle = (hitPos - 0.5) * Math.PI / 2;  // -45도에서 45도 사이의 각도
-                    var speed = Math.sqrt(dx * dx + dy * dy);
+                    var speed = Math.sqrt(dx * dx + dy * dy) * 1.05; // 속도 약간 증가
         
-                    dx = speed * Math.sin(angle) * 1.5;  // 부딪히는 위치에 따라 속도 조정
-                    dy = -speed * Math.cos(angle) * 1.5;
+                    dx = speed * Math.sin(angle);
+                    dy = -speed * Math.cos(angle);
         
                     if (difficulty === 'hard') {
                         var randAngle = (Math.random() - 0.5) * 40;
