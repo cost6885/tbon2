@@ -511,8 +511,7 @@
             gameStarted = false; // Ensure gameStarted is reset
             elapsedTime = 0;
             totalItems = Math.floor(Math.random() * 5) + 1; // 총 아이템 수 1~5 사이로 설정
-            fallingItemData = null; // 아이템 데이터 초기화
-            fallingItem.style.display = 'none'; // 아이템 숨기기
+            fallingItemData = null; // 아이템 데이터 초기화            
             console.log("Game initialized.");
         }
 
@@ -673,9 +672,9 @@
         
                             b.status = 0;
                             score++;
-                            
-                            // 특정 블럭을 깨면 아이템 생성
-                            if (c == 2 && r == 1 && totalItems > 0 && !fallingItemData) {
+        
+                            // 특정 블럭을 부쉈을 때 아이템 생성
+                            if (c == 2 && r == 1 && totalItems > 0) {
                                 fallingItemData = { x: b.x + brickWidth / 2 - itemWidth / 2, y: b.y, dy: 2 };
                                 fallingItem.style.display = 'block';
                                 totalItems--;
@@ -688,6 +687,21 @@
                             }
                         }
                     }
+                }
+            }
+        
+            // 아이템이 떨어지는 로직
+            if (fallingItemData) {
+                fallingItemData.y += fallingItemData.dy;
+                fallingItem.style.top = fallingItemData.y + 'px';
+                fallingItem.style.left = fallingItemData.x + 'px';
+        
+                if (fallingItemData.y > canvas.height - paddleHeight - itemHeight && fallingItemData.x > paddleX && fallingItemData.x < paddleX + paddleWidth) {
+                    fallingItem.style.display = 'none';
+                    fallingItemData = null;
+                    itemCaught = true; // 아이템을 받음
+                } else if (fallingItemData.y > canvas.height - itemHeight) {
+                    gameOver(); // 아이템을 받지 못하면 게임 오버
                 }
             }
         
@@ -717,7 +731,6 @@
                 }
             }
         }
-
 
 
         
