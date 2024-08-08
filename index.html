@@ -733,18 +733,20 @@
             var employeeId = document.getElementById("employeeId").value;
             var name = document.getElementById("name").value;
             var elapsedTime = localStorage.getItem("elapsedTime");
+            var participationTime = new Date().toLocaleString(); // 참여 시간 생성
         
             var data = {
                 company: company,
                 employeeId: employeeId,
                 name: name,
-                elapsedTime: elapsedTime
+                elapsedTime: elapsedTime,
+                participationTime: participationTime // 참여 시간을 데이터에 추가
             };
         
             // 로딩 스크린 표시
             showLoadingScreen();
         
-            fetch('https://script.google.com/macros/s/AKfycbyswWzyoqno9M57sszIKFon6chfRVTswC0mzzixDp3FXGqChQdOquAZoNe1GTh2CsVbDg/exec', {
+            fetch('https://script.google.com/macros/s/AKfycbyVVrwLdytYOyDOeolarDQvl0XyRoHi_i0eCIB0iup_wS6cuNSR3cizi_aXwBTKmfS-wg/exec', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "text/plain;charset=utf-8",
@@ -805,7 +807,7 @@
         }
 
         function displayLocalRankingBoard() {
-          fetch('https://script.google.com/macros/s/AKfycbwuNc3Je7sJ1iaOE_Wxk9x_lfPdccCenupOcoPWWDAY0qQjvVdUusHOw8omEiFIAw9ZuQ/exec', {
+          fetch('https://script.google.com/macros/s/AKfycbyVVrwLdytYOyDOeolarDQvl0XyRoHi_i0eCIB0iup_wS6cuNSR3cizi_aXwBTKmfS-wg/exec', {
             mode: 'cors'
           })
           .then(response => {
