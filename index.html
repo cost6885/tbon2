@@ -658,27 +658,24 @@
                     var b = bricks[c][r];
                     if (b.status == 1) {
                         if (x + dx > b.x && x + dx < b.x + brickWidth && y + dy > b.y && y + dy < b.y + brickHeight) {
-                            var hitFromLeft = x + enlargedBallRadius > b.x && x - enlargedBallRadius < b.x;
-                            var hitFromRight = x + enlargedBallRadius > b.x + brickWidth && x - enlargedBallRadius < b.x + brickWidth;
-                            var hitFromTop = y + enlargedBallRadius > b.y && y - enlargedBallRadius < b.y;
-                            var hitFromBottom = y + enlargedBallRadius > b.y + brickHeight && y - enlargedBallRadius < b.y + brickHeight;
-        
-                            if (hitFromLeft || hitFromRight) {
+                            // 공이 블록에 부딪힘
+                            if (x - enlargedBallRadius < b.x || x + enlargedBallRadius > b.x + brickWidth) {
                                 dx = -dx;
                             }
-                            if (hitFromTop || hitFromBottom) {
+                            if (y - enlargedBallRadius < b.y || y + enlargedBallRadius > b.y + brickHeight) {
                                 dy = -dy;
                             }
         
                             b.status = 0;
                             score++;
         
-                            // 블럭을 부쉈을 때 아이템 생성
+                            // 아이템 생성 로직
                             if (totalItems > 0) {
                                 fallingItemData = { x: b.x + brickWidth / 2 - itemWidth / 2, y: b.y, dy: 2 };
                                 fallingItem.style.display = 'block';
+                                fallingItem.style.top = `${fallingItemData.y}px`;
+                                fallingItem.style.left = `${fallingItemData.x}px`;
                                 totalItems--;
-                                console.log("Falling item generated at: ", b.x, b.y);
                             }
         
                             if (score == brickRowCount * brickColumnCount) {
@@ -693,8 +690,7 @@
             // 아이템이 떨어지는 로직
             if (fallingItemData) {
                 fallingItemData.y += fallingItemData.dy;
-                fallingItem.style.top = fallingItemData.y + 'px';
-                fallingItem.style.left = fallingItemData.x + 'px';
+                fallingItem.style.top = `${fallingItemData.y}px`;
         
                 if (fallingItemData.y > canvas.height - paddleHeight - itemHeight && fallingItemData.x > paddleX && fallingItemData.x < paddleX + paddleWidth) {
                     fallingItem.style.display = 'none';
@@ -705,11 +701,12 @@
                 }
             }
         
+            // 공과 패들의 충돌 감지
             if (y + dy > canvas.height - paddleHeight - enlargedBallRadius) {
                 if (x > paddleX && x < paddleX + paddleWidth) {
                     var hitPos = (x - paddleX) / paddleWidth;
-                    var angle = (hitPos - 0.5) * Math.PI / 2;  // -45도에서 45도 사이의 각도
-                    var speed = Math.sqrt(dx * dx + dy * dy) * 1.05; // 속도 약간 증가
+                    var angle = (hitPos - 0.5) * Math.PI / 2;
+                    var speed = Math.sqrt(dx * dx + dy * dy) * 1.05;
         
                     dx = speed * Math.sin(angle);
                     dy = -speed * Math.cos(angle);
@@ -717,9 +714,9 @@
                     if (difficulty === 'hard') {
                         adjustSpeed(10, 19, 40);
                     } else if (difficulty === 'challenge') {
-                        adjustSpeed(40, 76, 160); // 최소 및 최대 속도를 hard의 4배로 설정
+                        adjustSpeed(40, 76, 160);
                     } else {
-                        adjustSpeed(5, 7, 0); // 쉬움 난이도에서는 속도를 줄이고 각도 변경을 하지 않습니다.
+                        adjustSpeed(5, 7, 0);
                     }
         
                     y = canvas.height - paddleHeight - enlargedBallRadius;
@@ -800,24 +797,22 @@
         
             if (fallingItemData) {
                 fallingItemData.y += fallingItemData.dy;
-                if (fallingItemData.y > canvas.height - paddleHeight - itemHeight && fallingItemData.x > paddleX && fallingItemData.x < paddleX + paddleWidth) {
+                fallingItem.style.top = fallingItemData.y + 'px';
+                fallingItem.style.left = fallingItemData.x + 'px';
+            
+                if (fallingItemData.y > canvas.height - paddleHeight - itemHeight && 
+                    fallingItemData.x > paddleX && fallingItemData.x < paddleX + paddleWidth) {
                     // 아이템을 패들로 받았을 때
                     fallingItemData = null;
                     fallingItem.style.display = 'none';
                     console.log("Item caught!");
                 } else if (fallingItemData.y > canvas.height - itemHeight) {
                     // 아이템이 바닥에 닿았을 때
-                    gameStarted = false;
-                    fallingItem.style.display = 'none';
-                    document.getElementById("startMessage").style.display = "block";
-                    successMessageShown = true;
+                    gameOver();
                     return;
-                } else {
-                    fallingItem.style.top = fallingItemData.y + 'px';
-                    fallingItem.style.left = fallingItemData.x + 'px';
                 }
             }
-        
+            
             if (x + dx > canvas.width - enlargedBallRadius || x + dx < enlargedBallRadius) {
                 dx = -dx;
             }
