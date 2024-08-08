@@ -347,9 +347,10 @@
 
         var item, itemX, itemY, itemFalling = false, itemCaught = false;
 
-        var itemHeight = 20; // 아이템 높이 정의
-        var itemWidth = 20; // 아이템 너비 정의
-        var fallingItem = null; // 떨어지는 아이템 초기화
+        var itemHeight = 50; // 아이템 높이 정의
+        var itemWidth = 50; // 아이템 너비 정의
+        var fallingItem = document.getElementById('fallingItem'); // 떨어지는 아이템 이미지
+        var fallingItemData = null; // 떨어지는 아이템 데이터 초기화
         
         var canvas, ctx, ballRadius = 10, x, y, dx = 6, dy = -6, paddleHeight = 47, paddleWidth = 133, paddleX;
         var rightPressed = false, leftPressed = false;
@@ -668,11 +669,12 @@
                             b.status = 0;
                             score++;
                             
-                            // 특정 블럭을 깨면 아이템 생성
-                            if (c == 2 && r == 1 && !fallingItem) {
-                                fallingItem = { x: b.x + brickWidth / 2 - itemWidth / 2, y: b.y, dy: 2 };
+                            // 무작위로 특정 블럭을 깨면 아이템 생성
+                            if (Math.random() < 0.1 && !fallingItemData) { // 10% 확률로 아이템 생성
+                                fallingItemData = { x: b.x + brickWidth / 2 - itemWidth / 2, y: b.y, dy: 2 };
+                                fallingItem.style.display = 'block';
                             }
-                            
+        
                             if (score == brickRowCount * brickColumnCount) {
                                 gameStarted = false;
                                 drawSuccessMessage();
@@ -682,14 +684,15 @@
                 }
             }
         
-            if (fallingItem) {
-                ctx.fillStyle = "red";
-                ctx.fillRect(fallingItem.x, fallingItem.y, itemWidth, itemHeight);
-                fallingItem.y += fallingItem.dy;
+            if (fallingItemData) {
+                fallingItemData.y += fallingItemData.dy;
+                fallingItem.style.left = `${fallingItemData.x}px`;
+                fallingItem.style.top = `${fallingItemData.y}px`;
         
-                if (fallingItem.y + itemHeight > canvas.height - paddleHeight && fallingItem.x > paddleX && fallingItem.x < paddleX + paddleWidth) {
-                    fallingItem = null; // 아이템 잡기 성공
-                } else if (fallingItem.y + itemHeight > canvas.height) {
+                if (fallingItemData.y + itemHeight > canvas.height - paddleHeight && fallingItemData.x > paddleX && fallingItemData.x < paddleX + paddleWidth) {
+                    fallingItemData = null; // 아이템 잡기 성공
+                    fallingItem.style.display = 'none';
+                } else if (fallingItemData.y + itemHeight > canvas.height) {
                     gameOver(); // 아이템 잡기 실패, 게임 오버
                 }
             }
