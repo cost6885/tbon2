@@ -346,6 +346,10 @@
         var defaultCharacter = 'https://github.com/cost6885/tbon2/raw/main/image/racoon1.gif';
 
         var item, itemX, itemY, itemFalling = false, itemCaught = false;
+
+        var itemHeight = 20; // 아이템 높이 정의
+        var itemWidth = 20; // 아이템 너비 정의
+        var fallingItem = null; // 떨어지는 아이템 초기화
         
         var canvas, ctx, ballRadius = 10, x, y, dx = 6, dy = -6, paddleHeight = 47, paddleWidth = 133, paddleX;
         var rightPressed = false, leftPressed = false;
@@ -663,23 +667,30 @@
         
                             b.status = 0;
                             score++;
-        
-                            if (Math.random() < 0.2) { // 10% 확률로 아이템 떨어뜨림
-                                itemFalling = true;
-                                itemCaught = false;
-                                itemX = b.x;
-                                itemY = b.y;
-                                item.style.left = itemX + 'px';
-                                item.style.top = itemY + 'px';
-                                item.style.display = 'block';
+                            
+                            // 특정 블럭을 깨면 아이템 생성
+                            if (c == 2 && r == 1 && !fallingItem) {
+                                fallingItem = { x: b.x + brickWidth / 2 - itemWidth / 2, y: b.y, dy: 2 };
                             }
-        
+                            
                             if (score == brickRowCount * brickColumnCount) {
                                 gameStarted = false;
                                 drawSuccessMessage();
                             }
                         }
                     }
+                }
+            }
+        
+            if (fallingItem) {
+                ctx.fillStyle = "red";
+                ctx.fillRect(fallingItem.x, fallingItem.y, itemWidth, itemHeight);
+                fallingItem.y += fallingItem.dy;
+        
+                if (fallingItem.y + itemHeight > canvas.height - paddleHeight && fallingItem.x > paddleX && fallingItem.x < paddleX + paddleWidth) {
+                    fallingItem = null; // 아이템 잡기 성공
+                } else if (fallingItem.y + itemHeight > canvas.height) {
+                    gameOver(); // 아이템 잡기 실패, 게임 오버
                 }
             }
         
@@ -702,27 +713,14 @@
         
                     y = canvas.height - paddleHeight - enlargedBallRadius;
                 } else if (y + dy > canvas.height - enlargedBallRadius) {
-                    gameOver();
+                    gameStarted = false;
+                    document.getElementById("startMessage").style.display = "block";
+                    successMessageShown = true;
                     return;
                 }
             }
-        
-            // 아이템이 떨어지는 경우의 로직
-            if (itemFalling) {
-                itemY += 5; // 아이템 낙하 속도 조정
-                item.style.top = itemY + 'px';
-        
-                if (itemY + itemHeight > canvas.height) {
-                    itemFalling = false;
-                    item.style.display = 'none';
-                    gameOver(); // 아이템을 놓치면 게임 오버
-                } else if (itemY + itemHeight > canvas.height - paddleHeight - 10 && itemX > paddleX && itemX < paddleX + paddleWidth) {
-                    itemFalling = false;
-                    item.style.display = 'none';
-                    itemCaught = true; // 아이템을 잡았을 때
-                }
-            }
         }
+
 
         
         function adjustSpeed(minSpeed, maxSpeed, randAngleRange) {
