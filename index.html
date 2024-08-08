@@ -724,9 +724,7 @@
         
                     y = canvas.height - paddleHeight - enlargedBallRadius;
                 } else if (y + dy > canvas.height - enlargedBallRadius) {
-                    gameStarted = false;
-                    document.getElementById("startMessage").style.display = "block";
-                    successMessageShown = true;
+                    gameOver();
                     return;
                 }
             }
