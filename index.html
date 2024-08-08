@@ -241,6 +241,19 @@
             top: calc(50% - 300px - 40px); /* 화면 중앙에서 캔버스 높이의 절반과 버튼 위치를 조정 */
             right: calc(50% - 320px); /* 화면 중앙에서 캔버스 너비의 절반을 조정 */
         }        
+
+        .challenge {
+            background-color: red; /* 버튼 배경색을 빨간색으로 설정 */
+            color: white; /* 글자색을 흰색으로 설정 */
+        }
+        
+        .challenge:hover {
+            background-color: darkred; /* 호버 시 배경색을 짙은 빨간색으로 설정 */
+            color: white; /* 호버 시 글자색을 흰색으로 유지 */
+            cursor: pointer; /* 호버 시 손가락 모양 커서 */
+        }
+
+        
     </style>
 </head>
 <body>
@@ -298,6 +311,7 @@
         <h3>난이도를 선택하세요</h3>
         <button class="difficulty-option styled-button" onclick="selectDifficulty('easy')">쉬움</button>
         <button class="difficulty-option styled-button" onclick="selectDifficulty('hard')">어려움</button>
+        <button id="challengeButton" class="difficulty-option styled-button challenge" style="display: none;" onclick="selectDifficulty('challenge')">도전</button>
     </div>
 
     <div id="startButtonContainer">
@@ -332,6 +346,7 @@
         var difficulty = 'easy';
         var audio = document.getElementById('bgm');
         var isDragging = false;
+        var gamecount = 0
         ballImage.src = defaultCharacter;
 
         document.addEventListener("DOMContentLoaded", function() {
@@ -377,10 +392,18 @@
         });
 
 
+        function updateDifficultySelection() {
+            if (gamecount >= 3) {
+                document.getElementById('challengeButton').style.display = 'block';
+            } else {
+                document.getElementById('challengeButton').style.display = 'none';
+            }
+        }
+                
+
         function closeWindow() {
             window.close();
         }
-
         
         function playAudio() {
             audio.play();
@@ -401,7 +424,8 @@
             document.getElementById("prepare").style.display = "none";
             document.getElementById("exit").style.display = "none";
             document.getElementById("characterSelection").style.display = "block";
-            document.getElementById("difficultySelection").style.display = "block";            
+            document.getElementById("difficultySelection").style.display = "block";    
+            updateDifficultySelection();
         }
 
         function selectCharacter(src) {
@@ -642,41 +666,11 @@
                     dy = -speed * Math.cos(angle);
         
                     if (difficulty === 'hard') {
-                        var randAngle = (Math.random() - 0.5) * 40;
-                        dx += randAngle;
-        
-                        var angle = Math.atan2(dy, dx);
-                        var minAngle = Math.PI / 6;
-        
-                        if (Math.abs(angle) < minAngle) {
-                            if (angle < 0) {
-                                angle = -minAngle;
-                            } else {
-                                angle = minAngle;
-                            }
-                            var speed = Math.sqrt(dx * dx + dy * dy);
-                            dx = speed * Math.cos(angle);
-                            dy = speed * Math.sin(angle);
-                        }
-        
-                        var minSpeed = 10;
-                        var maxSpeed = 19;
-                        var speed = Math.sqrt(dx * dx + dy * dy);
-                        if (speed < minSpeed || speed > maxSpeed) {
-                            var randomSpeed = minSpeed + Math.random() * (maxSpeed - minSpeed);
-                            dx = (dx / speed) * randomSpeed;
-                            dy = (dy / speed) * randomSpeed;
-                        }
+                        adjustSpeed(10, 19, 40);
+                    } else if (difficulty === 'challenge') {
+                        adjustSpeed(40, 76, 160); // 최소 및 최대 속도를 hard의 4배로 설정
                     } else {
-                        // 쉬움 난이도에서는 속도를 줄이고 각도 변경을 하지 않습니다.
-                        var minSpeed = 5;
-                        var maxSpeed = 7;
-                        var speed = Math.sqrt(dx * dx + dy * dy);
-                        if (speed < minSpeed || speed > maxSpeed) {
-                            var randomSpeed = minSpeed + Math.random() * (maxSpeed - minSpeed);
-                            dx = (dx / speed) * randomSpeed;
-                            dy = (dy / speed) * randomSpeed;
-                        }
+                        adjustSpeed(5, 7, 0); // 쉬움 난이도에서는 속도를 줄이고 각도 변경을 하지 않습니다.
                     }
         
                     y = canvas.height - paddleHeight - enlargedBallRadius;
@@ -688,6 +682,33 @@
                 }
             }
         }
+        
+        function adjustSpeed(minSpeed, maxSpeed, randAngleRange) {
+            var randAngle = (Math.random() - 0.5) * randAngleRange;
+            dx += randAngle;
+        
+            var angle = Math.atan2(dy, dx);
+            var minAngle = Math.PI / 6;
+        
+            if (Math.abs(angle) < minAngle) {
+                if (angle < 0) {
+                    angle = -minAngle;
+                } else {
+                    angle = minAngle;
+                }
+                var speed = Math.sqrt(dx * dx + dy * dy);
+                dx = speed * Math.cos(angle);
+                dy = speed * Math.sin(angle);
+            }
+        
+            var speed = Math.sqrt(dx * dx + dy * dy);
+            if (speed < minSpeed || speed > maxSpeed) {
+                var randomSpeed = minSpeed + Math.random() * (maxSpeed - minSpeed);
+                dx = (dx / speed) * randomSpeed;
+                dy = (dy / speed) * randomSpeed;
+            }
+        }
+
 
         function startGame() {
             document.getElementById("gameDescription").style.display = 'none';
@@ -770,7 +791,7 @@
             };
         
             // 로딩 스크린 표시
-            showLoadingScreen();
+            showLoadingScreen();            
         
             fetch('https://script.google.com/macros/s/AKfycbyVVrwLdytYOyDOeolarDQvl0XyRoHi_i0eCIB0iup_wS6cuNSR3cizi_aXwBTKmfS-wg/exec', {
                 method: 'POST',
@@ -795,6 +816,10 @@
             })
             .finally(() => {
                 saveLocalRanking(data);
+
+                gamecount++; // 게임 카운트 증가
+                console.log('Game count:', gamecount);
+                
                 // 폼 입력 필드 초기화
                 document.getElementById("company").value = "";
                 document.getElementById("employeeId").value = "";
