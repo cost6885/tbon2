@@ -420,6 +420,7 @@
             itemY = brickY;
             item = document.getElementById('fallingItem'); // 아이템 이미지 요소 가져오기
             item.style.display = "block";
+            console.log('Brick X:', brickX, 'Brick Y:', brickY);            
         }
 
         function updateItemFall() {
@@ -427,6 +428,7 @@
                 itemY += 5; // 아이템의 낙하 속도
                 item.style.left = itemX + "px";
                 item.style.top = itemY + "px";
+                console.log('Item X:', itemX, 'Item Y:', itemY);
         
                 // 패들과 충돌 체크
                 if (itemY + itemHeight > canvas.height - paddleHeight - 10 && itemY + itemHeight < canvas.height) {
@@ -717,8 +719,6 @@
                             // 아이템 낙하를 시작할 확률 (예: 50%)
                             if (Math.random() < 0.5) {
                                 startItemFall(b.x + brickWidth / 2 - itemWidth / 2, b.y);
-                                console.log('Brick X:', brickX, 'Brick Y:', brickY);
-                                console.log('Item X:', itemX, 'Item Y:', itemY);
                             }
                         }
                     }
