@@ -19,7 +19,7 @@
             background: #ffd900;
         }
         
-        #loadingScreen {
+        #loadingScreen, #loadingScreen2 {
             text-align: center;
             font-size: 40px;
             position: fixed; /* 화면 전체를 덮도록 설정 */
@@ -35,12 +35,12 @@
             z-index: 1000; /* 다른 요소들 위에 표시되도록 설정 */
         }
 
-        #loadingScreen img {
+        #loadingScreen, #loadingScreen2 img {
             width: 50%; /* 필요에 따라 크기를 조정 */
             height: auto;
         }
 
-        #loadingScreen p {
+        #loadingScreen, #loadingScreen2 p {
             margin-top: 20px; /* 텍스트와 이미지 사이의 간격 */
         }
 
@@ -284,6 +284,13 @@
     <div id="loadingScreen">
         <div>
             <img src="https://github.com/cost6885/tbon2/raw/main/image/loading2.gif" alt="Loading...">
+            <p>로딩 중...</p>
+        </div>
+    </div>
+
+        <div id="loadingScreen2">
+        <div>
+            <img src="https://github.com/cost6885/tbon2/raw/main/image/loading3.gif" alt="Loading...">
             <p>로딩 중...</p>
         </div>
     </div>
@@ -960,46 +967,57 @@
             localStorage.setItem('rankings', JSON.stringify(rankings));
         }
 
+        
         function displayLocalRankingBoard() {
-          fetch('https://script.google.com/macros/s/AKfycbyVVrwLdytYOyDOeolarDQvl0XyRoHi_i0eCIB0iup_wS6cuNSR3cizi_aXwBTKmfS-wg/exec', {
-            mode: 'cors'
-          })
-          .then(response => {
-            if (!response.ok) {
-              throw new Error('Network response was not ok');
-            }
-            return response.json();
-          })
-          .then(data => {
-            console.log(data); // 받아온 데이터를 콘솔에 출력하여 확인합니다.
-            var rankingBoard = document.getElementById("rankingBoard");
-            rankingBoard.style.display = "block";
-            rankingBoard.innerHTML = "<h2>🏆게임 랭킹🏆</h2>";
-            // 데이터를 처리할 때 첫 번째 항목을 제거한 후 처리합니다.
-            data.slice(0).forEach((entry, index) => {
-              var entryElement = document.createElement("div");
-              entryElement.className = "rank";
-              if (index === 0) {
-                entryElement.innerHTML = `<span class="name" style="font-weight:bold; color: gold;">1등🥇 ${entry.name} </span><span class="time" style="font-weight:bold; color: gold;">${entry.elapsedTime.toFixed(2)}초</span>`;
-              } else if (index === 1) {
-                entryElement.innerHTML = `<span class="name" style="font-weight:bold; color: silver;">2등🥈 ${entry.name} </span><span class="time" style="font-weight:bold; color: silver;">${entry.elapsedTime.toFixed(2)}초</span>`;
-              } else if (index === 2) {
-                entryElement.innerHTML = `<span class="name" style="font-weight:bold; color: bronze;">3등🥉 ${entry.name} </span><span class="time" style="font-weight:bold; color: bronze;">${entry.elapsedTime.toFixed(2)}초</span>`;
-              } else if (index === 3) {
-                entryElement.innerHTML = `<span class="name">4등🙄 ${entry.name} </span><span class="time">${entry.elapsedTime.toFixed(2)}초</span>`;
-              } else if (index === 4) {
-                entryElement.innerHTML = `<span class="name">5등🙄 ${entry.name} </span><span class="time">${entry.elapsedTime.toFixed(2)}초</span>`;
-              } else if (index === 5) {
-                entryElement.innerHTML = `<span class="name">6등🙄 ${entry.name} </span><span class="time">${entry.elapsedTime.toFixed(2)}초</span>`;
-              } else if (index === 6) {
-                entryElement.innerHTML = `<span class="name">7등🙄 ${entry.name} </span><span class="time">${entry.elapsedTime.toFixed(2)}초</span>`;
-              }
-              rankingBoard.appendChild(entryElement);
+            // 로딩 화면을 표시
+            var loadingScreen2 = document.getElementById("loadingScreen2");
+            loadingScreen2.style.display = "flex";
+            
+            fetch('https://script.google.com/macros/s/AKfycbyVVrwLdytYOyDOeolarDQvl0XyRoHi_i0eCIB0iup_wS6cuNSR3cizi_aXwBTKmfS-wg/exec', {
+                mode: 'cors'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data); // 받아온 데이터를 콘솔에 출력하여 확인합니다.
+                var rankingBoard = document.getElementById("rankingBoard");
+                rankingBoard.style.display = "block";
+                rankingBoard.innerHTML = "<h2>🏆게임 랭킹🏆</h2>";
+                // 데이터를 처리할 때 첫 번째 항목을 제거한 후 처리합니다.
+                data.slice(0).forEach((entry, index) => {
+                    var entryElement = document.createElement("div");
+                    entryElement.className = "rank";
+                    if (index === 0) {
+                        entryElement.innerHTML = `<span class="name" style="font-weight:bold; color: gold;">1등🥇 ${entry.name} </span><span class="time" style="font-weight:bold; color: gold;">${entry.elapsedTime.toFixed(2)}초</span>`;
+                    } else if (index === 1) {
+                        entryElement.innerHTML = `<span class="name" style="font-weight:bold; color: silver;">2등🥈 ${entry.name} </span><span class="time" style="font-weight:bold; color: silver;">${entry.elapsedTime.toFixed(2)}초</span>`;
+                    } else if (index === 2) {
+                        entryElement.innerHTML = `<span class="name" style="font-weight:bold; color: bronze;">3등🥉 ${entry.name} </span><span class="time" style="font-weight:bold; color: bronze;">${entry.elapsedTime.toFixed(2)}초</span>`;
+                    } else if (index === 3) {
+                        entryElement.innerHTML = `<span class="name">4등🙄 ${entry.name} </span><span class="time">${entry.elapsedTime.toFixed(2)}초</span>`;
+                    } else if (index === 4) {
+                        entryElement.innerHTML = `<span class="name">5등🙄 ${entry.name} </span><span class="time">${entry.elapsedTime.toFixed(2)}초</span>`;
+                    } else if (index === 5) {
+                        entryElement.innerHTML = `<span class="name">6등🙄 ${entry.name} </span><span class="time">${entry.elapsedTime.toFixed(2)}초</span>`;
+                    } else if (index === 6) {
+                        entryElement.innerHTML = `<span class="name">7등🙄 ${entry.name} </span><span class="time">${entry.elapsedTime.toFixed(2)}초</span>`;
+                    }
+                    rankingBoard.appendChild(entryElement);
+                });
+            })
+            .finally(() => {
+                // 로딩 화면을 숨김
+                loadingScreen2.style.display = "none";
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                // 로딩 화면을 숨김 (오류 발생 시에도)
+                loadingScreen2.style.display = "none";
             });
-          })
-          .catch(error => {
-            console.error('Error fetching data:', error);
-          });
         }
 
 
