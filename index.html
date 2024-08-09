@@ -416,11 +416,21 @@
         function startItemFall(brickX, brickY) {
             itemFalling = true;
             itemCaught = false;
-            itemX = Math.min(Math.max(0, brickX + brickWidth / 2 - itemWidth / 2), canvas.width - itemWidth);
-            itemY = Math.min(Math.max(0, brickY), canvas.height - itemHeight);
+        
+            // 캔버스의 위치를 가져옴
+            var canvasRect = canvas.getBoundingClientRect();
+        
+            // 아이템 위치를 캔버스 기준으로 조정
+            itemX = canvasRect.left + brickX + brickWidth / 2 - itemWidth / 2;
+            itemY = canvasRect.top + brickY;
+        
             item = document.getElementById('fallingItem'); // 아이템 이미지 요소 가져오기
+            item.style.position = "absolute";
+            item.style.left = itemX + "px";
+            item.style.top = itemY + "px";
             item.style.display = "block";
         }
+
 
         function updateItemFall() {
             if (itemFalling) {
