@@ -435,13 +435,20 @@
         function updateItemFall() {
             if (itemFalling) {
                 itemY += 5; // 아이템의 낙하 속도
+        
+                // 캔버스의 위치를 가져옴
+                var canvasRect = canvas.getBoundingClientRect();
+        
+                // 아이템 위치를 캔버스 기준으로 조정
+                var relativeItemX = itemX - canvasRect.left;
+                var relativeItemY = itemY - canvasRect.top;
+        
                 item.style.left = itemX + "px";
                 item.style.top = itemY + "px";
-                console.log('Item X:', itemX, 'Item Y:', itemY);
         
-                // 패들과 충돌 체크
-                if (itemY + itemHeight > canvas.height - paddleHeight - 10 && itemY + itemHeight < canvas.height) {
-                    if (itemX > paddleX && itemX + itemWidth < paddleX + paddleWidth) {
+                // 패들과 충돌 체크 (캔버스 기준으로 계산)
+                if (relativeItemY + itemHeight > canvas.height - paddleHeight - 10 && relativeItemY + itemHeight < canvas.height) {
+                    if (relativeItemX > paddleX && relativeItemX + itemWidth < paddleX + paddleWidth) {
                         itemCaught = true;
                         itemFalling = false;
                         item.style.display = "none";
@@ -450,7 +457,7 @@
                 }
         
                 // 아이템이 바닥에 도달했을 때
-                if (itemY + itemHeight >= canvas.height) {
+                if (relativeItemY + itemHeight >= canvas.height) {
                     if (!itemCaught) {
                         gameOver(); // 아이템을 잡지 못했으므로 게임오버
                     }
