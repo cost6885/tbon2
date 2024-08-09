@@ -679,7 +679,6 @@
                     }
                 }
             }
-        }
         
             // 아이템이 떨어지는 로직
             if (fallingItemData) {
@@ -791,22 +790,23 @@
         
             if (fallingItemData) {
                 fallingItemData.y += fallingItemData.dy;
-                fallingItem.style.top = fallingItemData.y + 'px';
-                fallingItem.style.left = fallingItemData.x + 'px';
-            
-                if (fallingItemData.y > canvas.height - paddleHeight - itemHeight && 
+                fallingItem.style.top = `${fallingItemData.y}px`;
+        
+                if (fallingItemData.y > canvas.height - paddleHeight - itemHeight &&
                     fallingItemData.x > paddleX && fallingItemData.x < paddleX + paddleWidth) {
                     // 아이템을 패들로 받았을 때
-                    fallingItemData = null;
                     fallingItem.style.display = 'none';
+                    fallingItemData = null;
                     console.log("Item caught!");
                 } else if (fallingItemData.y > canvas.height - itemHeight) {
-                    // 아이템이 바닥에 닿았을 때
+                    // 아이템이 바닥에 닿았을 때만 게임 오버
+                    gameStarted = false;
+                    fallingItem.style.display = 'none';
                     gameOver();
                     return;
                 }
             }
-            
+        
             if (x + dx > canvas.width - enlargedBallRadius || x + dx < enlargedBallRadius) {
                 dx = -dx;
             }
