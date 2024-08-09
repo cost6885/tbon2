@@ -465,7 +465,7 @@
                         item.style.display = "none";
                         
                         // 아이템이 패들과 충돌했을 때 공 이미지 변경
-                        ballImage.src = 'https://github.com/cost6885/tbon2/raw/main/image/block.png'; // ball.jpg로 변경
+                        ballImage.src = 'https://github.com/cost6885/tbon2/raw/main/image/racoon7.png'; // 너구리 흑화
                         
                         return; // 충돌 시 즉시 함수 종료
                     }
@@ -726,18 +726,21 @@
                     var b = bricks[c][r];
                     if (b.status == 1) {
                         if (x + dx > b.x && x + dx < b.x + brickWidth && y + dy > b.y && y + dy < b.y + brickHeight) {
-                            var hitFromLeft = x + enlargedBallRadius > b.x && x - enlargedBallRadius < b.x;
-                            var hitFromRight = x + enlargedBallRadius > b.x + brickWidth && x - enlargedBallRadius < b.x + brickWidth;
-                            var hitFromTop = y + enlargedBallRadius > b.y && y - enlargedBallRadius < b.y;
-                            var hitFromBottom = y + enlargedBallRadius > b.y + brickHeight && y - enlargedBallRadius < b.y + brickHeight;
+                            // 아이템을 획득한 경우 벽돌을 뚫고 지나감
+                            if (!itemCaught) { 
+                                var hitFromLeft = x + enlargedBallRadius > b.x && x - enlargedBallRadius < b.x;
+                                var hitFromRight = x + enlargedBallRadius > b.x + brickWidth && x - enlargedBallRadius < b.x + brickWidth;
+                                var hitFromTop = y + enlargedBallRadius > b.y && y - enlargedBallRadius < b.y;
+                                var hitFromBottom = y + enlargedBallRadius > b.y + brickHeight && y - enlargedBallRadius < b.y + brickHeight;
         
-                            if (hitFromLeft || hitFromRight) {
-                                dx = -dx;
+                                if (hitFromLeft || hitFromRight) {
+                                    dx = -dx;
+                                }
+                                if (hitFromTop || hitFromBottom) {
+                                    dy = -dy;
+                                }
                             }
-                            if (hitFromTop || hitFromBottom) {
-                                dy = -dy;
-                            }
-        
+                            
                             b.status = 0;
                             score++;
                             if (score == brickRowCount * brickColumnCount) {
