@@ -35,12 +35,12 @@
             z-index: 1000; /* 다른 요소들 위에 표시되도록 설정 */
         }
 
-        #loadingScreen img {
+        #loadingScreen, #loadingScreen2 img {
             width: 50%; /* 필요에 따라 크기를 조정 */
             height: auto;
         }
 
-        #loadingScreen p {
+        #loadingScreen, #loadingScreen2 p {
             margin-top: 20px; /* 텍스트와 이미지 사이의 간격 */
         }
 
@@ -377,6 +377,9 @@
         ballImage.src = defaultCharacter;
 
         document.addEventListener("DOMContentLoaded", function() {
+
+            document.getElementById("loadingScreen2").style.display = "none";
+            
             showLoadingScreen();
             canvas = document.getElementById("gameCanvas");
             ctx = canvas.getContext("2d");
