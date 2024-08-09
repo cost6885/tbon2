@@ -448,7 +448,8 @@
         
                 // 패들과 충돌 체크 (캔버스 기준으로 계산)
                 if (relativeItemY + itemHeight > canvas.height - paddleHeight - 10 && relativeItemY + itemHeight < canvas.height) {
-                    if (relativeItemX > paddleX && relativeItemX + itemWidth < paddleX + paddleWidth) {
+                    // 패들의 전체 영역과 충돌 체크
+                    if (relativeItemX + itemWidth > paddleX && relativeItemX < paddleX + paddleWidth) {
                         itemCaught = true;
                         itemFalling = false;
                         item.style.display = "none";
@@ -467,6 +468,7 @@
                 }
             }
         }
+
 
         
         
