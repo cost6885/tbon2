@@ -892,9 +892,16 @@
 
         
         function sendToGoogleSheets() {
-            var company = document.getElementById("company").value;
-            var employeeId = document.getElementById("employeeId").value;
-            var name = document.getElementById("name").value;
+            var company = document.getElementById("company").value.trim();
+            var employeeId = document.getElementById("employeeId").value.trim();
+            var name = document.getElementById("name").value.trim();
+        
+            // 입력 필드가 비어있는지 확인
+            if (company === "" || employeeId === "" || name === "") {
+                alert("모든 정보를 입력해 주세요."); // 경고 메시지 표시
+                return; // 함수 종료
+            }
+        
             var elapsedTime = localStorage.getItem("elapsedTime");
             var participationTime = new Date().toLocaleString(); // 참여 시간 생성
         
@@ -932,7 +939,7 @@
             })
             .finally(() => {
                 saveLocalRanking(data);
-
+        
                 gamecount++; // 게임 카운트 증가
                 console.log('Game count:', gamecount);
                 
@@ -956,6 +963,7 @@
                 }, 4000); // 4000 밀리초 = 4초
             });
         }
+
 
 
         function getLocalRankings() {
