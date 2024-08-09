@@ -337,7 +337,7 @@
         Your browser does not support the audio element.
     </audio>
 
-
+    <!-- 낙하아이템 추가 -->
     <img id="fallingItem" src="https://github.com/cost6885/tbon2/raw/main/image/myun.png" style="display: none; position: absolute; width: 80px; height: 70px;" alt="Falling Item">
     
 
@@ -350,9 +350,11 @@
         var item, itemX, itemY, itemFalling = false, itemCaught = false;
 
         var itemHeight = 70; // 아이템 높이 정의
-        var itemWidth = 70; // 아이템 너비 정의
+        var itemWidth = 80; // 아이템 너비 정의
         var fallingItem = document.getElementById('fallingItem'); // 떨어지는 아이템 이미지
         var fallingItemData = null; // 떨어지는 아이템 데이터 초기화
+
+        var itemBlockIndex = Math.floor(Math.random() * (brickRowCount * brickColumnCount)); // 랜덤 선택
         
         var canvas, ctx, ballRadius = 10, x, y, dx = 6, dy = -6, paddleHeight = 47, paddleWidth = 133, paddleX;
         var rightPressed = false, leftPressed = false;
@@ -658,24 +660,15 @@
                     var b = bricks[c][r];
                     if (b.status == 1) {
                         if (x + dx > b.x && x + dx < b.x + brickWidth && y + dy > b.y && y + dy < b.y + brickHeight) {
-                            // 공이 블록에 부딪힘
-                            if (x - enlargedBallRadius < b.x || x + enlargedBallRadius > b.x + brickWidth) {
-                                dx = -dx;
-                            }
-                            if (y - enlargedBallRadius < b.y || y + enlargedBallRadius > b.y + brickHeight) {
-                                dy = -dy;
-                            }
-        
+                            // 블럭 파괴
                             b.status = 0;
                             score++;
         
-                            // 아이템 생성 로직
-                            if (totalItems > 0) {
+                            // 아이템 블럭인지 확인
+                            if (c * brickRowCount + r === itemBlockIndex) {
+                                // 아이템 낙하 시작
                                 fallingItemData = { x: b.x + brickWidth / 2 - itemWidth / 2, y: b.y, dy: 2 };
                                 fallingItem.style.display = 'block';
-                                fallingItem.style.top = `${fallingItemData.y}px`;
-                                fallingItem.style.left = `${fallingItemData.x}px`;
-                                totalItems--;
                             }
         
                             if (score == brickRowCount * brickColumnCount) {
@@ -686,6 +679,7 @@
                     }
                 }
             }
+        }
         
             // 아이템이 떨어지는 로직
             if (fallingItemData) {
