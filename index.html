@@ -519,6 +519,12 @@
             // 선택 상태 초기화
             characterSelected = false;
             difficultySelected = false;
+
+            // 낙하 아이템 초기화
+            itemFalling = false;
+            itemCaught = false;
+            itemStock = false;
+            
             document.querySelectorAll('.character-option').forEach(el => el.classList.remove('selected'));
             document.querySelectorAll('.difficulty-option').forEach(el => el.classList.remove('selected'));
         
