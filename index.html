@@ -577,7 +577,8 @@
                 }
             }
         
-            score = 0;
+            score = 0;            
+            document.getElementById("fallingItem").style.display = "none";
             document.getElementById("message").style.display = "none";
             document.getElementById("startMessage").style.display = "none";
             document.getElementById('prepare').style.display = 'none';
@@ -591,6 +592,7 @@
 
 
         function restartGame() {
+            document.getElementById("fallingItem").style.display = "none";
             document.getElementById("formContainer").style.display = "none";
             document.getElementById("rankingBoard").style.display = "none";
             document.getElementById("message").style.display = "none";
@@ -826,6 +828,7 @@
 
 
         function startGame() {
+            document.getElementById("fallingItem").style.display = "none";
             document.getElementById("gameDescription").style.display = 'none';
             document.getElementById("formContainer").style.display = "none";
             document.getElementById("gameCanvas").style.display = "block";
