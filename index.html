@@ -349,8 +349,8 @@
 
         var item, itemX, itemY, itemFalling = false, itemCaught = false;
 
-        var itemHeight = 70; // 아이템 높이 정의
-        var itemWidth = 80; // 아이템 너비 정의
+        var itemHeight = 108; // 아이템 높이 정의
+        var itemWidth = 100; // 아이템 너비 정의
         var fallingItem = document.getElementById('fallingItem'); // 떨어지는 아이템 이미지
         var fallingItemData = null; // 떨어지는 아이템 데이터 초기화        
         
@@ -416,11 +416,10 @@
         function startItemFall(brickX, brickY) {
             itemFalling = true;
             itemCaught = false;
-            itemX = brickX + brickWidth / 2 - itemWidth / 2;
-            itemY = brickY;
+            itemX = Math.min(Math.max(0, brickX + brickWidth / 2 - itemWidth / 2), canvas.width - itemWidth);
+            itemY = Math.min(Math.max(0, brickY), canvas.height - itemHeight);
             item = document.getElementById('fallingItem'); // 아이템 이미지 요소 가져오기
             item.style.display = "block";
-            console.log('Brick X:', brickX, 'Brick Y:', brickY);            
         }
 
         function updateItemFall() {
@@ -716,9 +715,11 @@
                                 drawSuccessMessage();
                             }
 
-                            // 아이템 낙하를 시작할 확률 (예: 50%)
-                            if (Math.random() < 0.5) {
-                                startItemFall(b.x + brickWidth / 2 - itemWidth / 2, b.y);
+                            // 아이템이 낙하 중이 아닐 때만 새로운 아이템 생성
+                            if (!itemFalling) {
+                                if (Math.random() < 0.5) {  // 아이템 낙하를 시작할 확률 (예: 50%)
+                                    startItemFall(b.x, b.y);
+                                }
                             }
                         }
                     }
