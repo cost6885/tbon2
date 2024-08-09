@@ -354,7 +354,7 @@
 
         var totalItems;        
 
-        var item, itemX, itemY, itemFalling = false, itemCaught = false;
+        var item, itemX, itemY, itemFalling = false, itemCaught = false, itemStock = false;
 
         var itemHeight = 108; // 아이템 높이 정의
         var itemWidth = 100; // 아이템 너비 정의
@@ -426,6 +426,7 @@
         function startItemFall(brickX, brickY) {
             itemFalling = true;
             itemCaught = false;
+            itemStock = false;
         
             // 캔버스의 위치를 가져옴
             var canvasRect = canvas.getBoundingClientRect();
@@ -461,6 +462,7 @@
                     // 패들의 전체 영역과 충돌 체크
                     if (relativeItemX + itemWidth > paddleX && relativeItemX < paddleX + paddleWidth) {
                         itemFalling = false;
+                        itemStock = true;
                         item.style.display = "none";
                         
                         // 새로운 이미지 객체 생성
@@ -766,8 +768,8 @@
                                 drawSuccessMessage();
                             }
 
-                            // 아이템이 낙하 중이 아닐 때만 새로운 아이템 생성
-                            if (!itemFalling) {
+                            // 아이템이 낙하 중이 아니고, itemStock이 false일 때만 새로운 아이템 생성
+                            if (!itemFalling && !itemStock) {
                                 if (Math.random() < 0.1) {  // 아이템 낙하를 시작할 확률 (예: 10%)
                                     startItemFall(b.x, b.y);
                                 }
