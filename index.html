@@ -512,8 +512,18 @@
             document.getElementById("prepare").style.display = "none";
             document.getElementById("exit").style.display = "none";
             document.getElementById("characterSelection").style.display = "block";
-            document.getElementById("difficultySelection").style.display = "block";                
-            checkStartCondition()
+            document.getElementById("difficultySelection").style.display = "block";
+        
+            // 선택 상태 초기화
+            characterSelected = false;
+            difficultySelected = false;
+            document.querySelectorAll('.character-option').forEach(el => el.classList.remove('selected'));
+            document.querySelectorAll('.difficulty-option').forEach(el => el.classList.remove('selected'));
+        
+            // fallingItem 숨기기
+            document.getElementById("fallingItem").style.display = "none";
+        
+            checkStartCondition();
         }
 
         function selectCharacter(src) {
