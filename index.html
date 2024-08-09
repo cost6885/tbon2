@@ -716,7 +716,9 @@
 
                             // 아이템 낙하를 시작할 확률 (예: 50%)
                             if (Math.random() < 0.5) {
-                                startItemFall(b.x, b.y);
+                                startItemFall(b.x + brickWidth / 2 - itemWidth / 2, b.y);
+                                console.log('Brick X:', brickX, 'Brick Y:', brickY);
+                                console.log('Item X:', itemX, 'Item Y:', itemY);
                             }
                         }
                     }
