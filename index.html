@@ -460,7 +460,6 @@
                 if (relativeItemY + itemHeight > canvas.height - paddleHeight - 10 && relativeItemY + itemHeight < canvas.height) {
                     // 패들의 전체 영역과 충돌 체크
                     if (relativeItemX + itemWidth > paddleX && relativeItemX < paddleX + paddleWidth) {
-                        itemCaught = true;
                         itemFalling = false;
                         item.style.display = "none";
                         
@@ -468,9 +467,10 @@
                         var newBallImage = new Image();
                         newBallImage.src = 'https://github.com/cost6885/tbon2/raw/main/image/racoon7.png'; // 너구리 흑화
                         
-                        // 이미지가 로드된 후에 변경
+                        // 이미지가 로드된 후에 블럭 무시 효과 적용
                         newBallImage.onload = function() {
                             ballImage.src = newBallImage.src;
+                            itemCaught = true;  // 이미지가 변경된 후에 블럭 무시 효과 발생
                         };
         
                         return; // 충돌 시 즉시 함수 종료
