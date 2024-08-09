@@ -609,17 +609,6 @@
         }
 
 
-        function restartGame() {
-            document.getElementById("fallingItem").style.display = "none";
-            document.getElementById("formContainer").style.display = "none";
-            document.getElementById("rankingBoard").style.display = "none";
-            document.getElementById("message").style.display = "none";
-            initGame();
-            gameStarted = true;
-            startTime = Date.now();
-            draw();
-        }
-
         function keyDownHandler(e) {
             if (e.key === "Right" || e.key === "ArrowRight") {
                 rightPressed = true;
@@ -627,11 +616,8 @@
                 leftPressed = true;
             } else if (e.key === " " && successMessageShown) {
                 document.getElementById("startMessage").style.display = "none";
-                initGame();
-                gameStarted = true;
-                startTime = Date.now();
-                successMessageShown = false;
-                draw();
+                prepare();  // initGame() 대신 prepare() 함수를 호출하여 준비 상태로 돌아갑니다.
+                successMessageShown = false; // 메시지가 숨겨졌음을 표시
             }
         }
 
