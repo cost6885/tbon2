@@ -583,8 +583,8 @@
             console.log("Initializing game...");
             x = canvas.width / 4; // 공의 초기 위치를 캔버스의 3분의 1 지점으로 설정
             y = canvas.height - paddleHeight - enlargedBallRadius; // 패들 위로 공의 초기 위치 설정
-            dx = 7;
-            dy = -7;
+            dx = 5;
+            dy = -5;
             paddleX = (canvas.width - paddleWidth) / 3; // 패들의 초기 위치를 캔버스의 3분의 1 지점으로 설정
         
             bricks = [];
@@ -929,7 +929,7 @@
             // 로딩 스크린 표시
             showLoadingScreen();            
         
-            fetch('https://script.google.com/macros/s/AKfycbyVVrwLdytYOyDOeolarDQvl0XyRoHi_i0eCIB0iup_wS6cuNSR3cizi_aXwBTKmfS-wg/exec', {
+            fetch('https://script.google.com/macros/s/AKfycbwOvJy6cjI5aELzdu0pnK4AyBAjXtgoumTzb5o-HW4gK0jEwSwhkKMNICANBpSnyEw8/exec', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "text/plain;charset=utf-8",
@@ -1000,7 +1000,7 @@
             var loadingScreen2 = document.getElementById("loadingScreen2");
             loadingScreen2.style.display = "flex";
             
-            fetch('https://script.google.com/macros/s/AKfycbyVVrwLdytYOyDOeolarDQvl0XyRoHi_i0eCIB0iup_wS6cuNSR3cizi_aXwBTKmfS-wg/exec', {
+            fetch('https://script.google.com/macros/s/AKfycbwOvJy6cjI5aELzdu0pnK4AyBAjXtgoumTzb5o-HW4gK0jEwSwhkKMNICANBpSnyEw8/exec', {
                 mode: 'cors'
             })
             .then(response => {
