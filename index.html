@@ -265,7 +265,7 @@
         <p>과연 너구리씨🦝는 라면들을 가지고</p>
         <p>저녁식사 시간⏱ 전에 돌아 갈 수 있을까요?</p>
         <p>단짝친구 다시마들이 도와줄테니 너무 걱정마세요^^</p>
-        <p>Tip❗ 다시마가 울퉁불퉁하니 점프에 주의</p>
+        <p>Tip❗ 가끔씩 떨어지는 스프를 먹어보세요</p>
         <p class="game-start">'준비하기' 버튼을 클릭👆하세요.</p> <!-- 여백 추가 -->
         <p class="ranking-section">🏆랭킹 1등🏆 너구리 멀티팩(40입)</p>
         <p>🥇랭킹 2등🥇 너구리컵(30입)</p>
@@ -615,7 +615,7 @@
             } else if (e.key === "Left" || e.key === "ArrowLeft") {
                 leftPressed = true;
             } else if (e.key === " " && successMessageShown) {
-                document.getElementById("startMessage").style.display = "none";
+                document.getElementById("startMessage").style.display = "block";
                 prepare();  // initGame() 대신 prepare() 함수를 호출하여 준비 상태로 돌아갑니다.
                 successMessageShown = false; // 메시지가 숨겨졌음을 표시
             }
