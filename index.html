@@ -18,6 +18,13 @@
         canvas {
             background: #ffd900;
         }
+
+        #gameContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
         
         #loadingScreen, #loadingScreen2 {
             text-align: center;
@@ -121,13 +128,13 @@
         }       
         
 
-        #startButton, #prepare {
+        #prepare {
             text-align: center;
             font-size: 24px;
             position: absolute;
-            top: 75%;
+            top: 75%; /* 원하는 위치로 조정 가능 */
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%); /* X 축으로만 중앙 정렬 */
             padding: 10px;
             border-radius: 10px;
             background-color: rgba(0, 0, 0, 0.7);
@@ -135,7 +142,36 @@
             display: none;
         }
 
-        #startButton:hover, #prepare:hover, #exit:hover, #startMessage:hover {
+        #startButton {
+            text-align: center;
+            font-size: 24px;
+            position: absolute;
+            top: 60%; /* 원하는 위치로 조정 가능 */
+            left: 50%;
+            transform: translateX(-50%); /* X 축으로만 중앙 정렬 */
+            padding: 10px;
+            border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            display: none;
+        }
+
+        #rankmore {
+            text-align: center;
+            font-size: 18px;
+            position: absolute;
+            top: 52%; /* 원하는 위치로 조정 가능 */
+            left: 50%;
+            transform: translateX(-50%); /* X 축으로만 중앙 정렬 */
+            padding: 10px;
+            border-radius: 10px;
+            background-color: rgba(128, 0, 128, 0.7);
+            color: white;
+            z-index: 500; /* 다른 요소들 위에 표시되도록 설정 */
+            display: none;
+        }
+
+        #startButton:hover, #prepare:hover, #exit:hover, #startMessage:hover, #rankmore:hover {
             background-color: white;
             color: black;
             border: 2px solid #4CAF50;
@@ -212,7 +248,7 @@
         #characterSelection, #difficultySelection {
             display: none;
             text-align: center;
-            margin-top: 10px;
+            margin-top: 20px;
         }
 
         .character-option {
@@ -233,16 +269,16 @@
         .selected {
             border: 2px solid red;
         }
-
-        #startButtonContainer {
-            text-align: center;
-            margin-top: 20px;
-        }
+        
         #audioControls {
             position: fixed;
-            top: calc(50% - 300px - 40px); /* 화면 중앙에서 캔버스 높이의 절반과 버튼 위치를 조정 */
+            top: 20px; /* 화면 중앙에서 캔버스 높이의 절반과 버튼 위치를 조정 */
             right: calc(50% - 320px); /* 화면 중앙에서 캔버스 너비의 절반을 조정 */
-        }        
+            display: flex;
+            flex-direction: column; /* 버튼들을 위아래로 배치 */
+            gap: 10px; /* 버튼 사이의 간격을 10px로 설정 (필요에 따라 조정 가능) */
+        }
+ 
 
         .difficulty-container {
             display: flex;
@@ -259,6 +295,7 @@
             border-color: blue;
             cursor: pointer; /* 손가락 모양 커서 */
         }
+
                 
     </style>
 </head>
@@ -298,47 +335,48 @@
         </div>
     </div>
 
-    
     <canvas id="gameCanvas" width="640" height="600"></canvas>
+        
+    <div id="gameContainer">    
+        <div id="characterSelection">
+            <h3>캐릭터를 선택하세요</h3>
+            <img src="https://github.com/cost6885/tbon2/raw/main/image/racoon1.gif" class="character-option" onclick="selectCharacter('https://github.com/cost6885/tbon2/raw/main/image/racoon1.gif')">
+            <img src="https://github.com/cost6885/tbon2/raw/main/image/racoon2.gif" class="character-option" onclick="selectCharacter('https://github.com/cost6885/tbon2/raw/main/image/racoon2.gif')">
+            <img src="https://github.com/cost6885/tbon2/raw/main/image/racoon5.gif" class="character-option" onclick="selectCharacter('https://github.com/cost6885/tbon2/raw/main/image/racoon5.gif')">
+            <img src="https://github.com/cost6885/tbon2/raw/main/image/racoon6.gif" class="character-option" onclick="selectCharacter('https://github.com/cost6885/tbon2/raw/main/image/racoon6.gif')">
+        </div>
     
+        <div id="difficultySelection">
+            <h3>난이도를 선택하세요</h3>
+            <div class="difficulty-container">
+                <button class="difficulty-option styled-button" onclick="selectDifficulty('easy')">쉬움</button>
+                <button class="difficulty-option styled-button" onclick="selectDifficulty('hard')">어려움</button>
+                <button id="challengeButton" class="difficulty-option styled-button" style="display: none;" onclick="selectDifficulty('challenge')">도전</button>
+            </div>
+        </div>
+    </div>
 
     <div id="buttonContainer">
         <div id="startMessage" onclick="prapare()">다시하기🔄</div>
         <div id="exit" onclick="closeWindow()">나가기🚪</div>
-    </div>
-    
+    </div>   
 
     <div id="message"></div>
+
+    <button id="rankmore" onclick="rankmore()">더보기</button>
     
     <div id="rankingBoard"></div>
 
     <button id="prepare" onclick="prapare()">준비하기</button>
 
-    <div id="characterSelection">
-        <h3>캐릭터를 선택하세요</h3>
-        <img src="https://github.com/cost6885/tbon2/raw/main/image/racoon1.gif" class="character-option" onclick="selectCharacter('https://github.com/cost6885/tbon2/raw/main/image/racoon1.gif')">
-        <img src="https://github.com/cost6885/tbon2/raw/main/image/racoon2.gif" class="character-option" onclick="selectCharacter('https://github.com/cost6885/tbon2/raw/main/image/racoon2.gif')">
-        <img src="https://github.com/cost6885/tbon2/raw/main/image/racoon5.gif" class="character-option" onclick="selectCharacter('https://github.com/cost6885/tbon2/raw/main/image/racoon5.gif')">
-        <img src="https://github.com/cost6885/tbon2/raw/main/image/racoon6.gif" class="character-option" onclick="selectCharacter('https://github.com/cost6885/tbon2/raw/main/image/racoon6.gif')">
-    </div>
-
-    <div id="difficultySelection">
-        <h3>난이도를 선택하세요</h3>
-        <div class="difficulty-container">
-            <button class="difficulty-option styled-button" onclick="selectDifficulty('easy')">쉬움</button>
-            <button class="difficulty-option styled-button" onclick="selectDifficulty('hard')">어려움</button>
-            <button id="challengeButton" class="difficulty-option styled-button" style="display: none;" onclick="selectDifficulty('challenge')">도전</button>
-        </div>
-    </div>
-
 
     <div id="startButtonContainer">
-        <button id="startButton" class="styled-button" onclick="startGame()">게임 시작</button>
+        <button id="startButton" onclick="startGame()">게임 시작</button>
     </div>
 
     <div id="audioControls">
-        <button onclick="pauseAudio()">BGM OFF🔈</button>
         <button onclick="playAudio()">BGM ON🔊</button>        
+        <button onclick="pauseAudio()">BGM OFF🔈</button>
     </div>
 
     <!-- BGM 추가 -->
@@ -506,44 +544,46 @@
             audio.pause();
             audio.currentTime = 0;  // 재생 위치를 처음으로 돌림
         }            
-        
+                
         function prapare() {
             document.getElementById("gameDescription").style.display = 'none';
             document.getElementById("formContainer").style.display = "none";
             document.getElementById("message").style.display = "none";
             document.getElementById("gameCanvas").style.display = "none";
-            document.getElementById("rankingBoard").style.display = "none";
             document.getElementById("startMessage").style.display = "none";
             document.getElementById("prepare").style.display = "none";
             document.getElementById("exit").style.display = "none";
             document.getElementById("characterSelection").style.display = "block";
             document.getElementById("difficultySelection").style.display = "block";
-
-
-        
+            document.getElementById("rankmore").style.display = "block";
+            
             // 선택 상태 초기화
             characterSelected = false;
             difficultySelected = false;
-
-            // 낙하 아이템 초기화
-            itemFalling = false;
-            itemCaught = false;
-            itemStock = false;
-
-            // 초기 캐릭터 이미지로 설정 (기본 상태로 복구)
-            ballImage.src = defaultCharacter;  // 이 부분을 추가해서 캐릭터를 기본 상태로 되돌립니다.
-            
-            document.querySelectorAll('.character-option').forEach(el => el.classList.remove('selected'));
-            document.querySelectorAll('.difficulty-option').forEach(el => el.classList.remove('selected'));
         
-            // fallingItem 숨기기
-            document.getElementById("fallingItem").style.display = "none";
-
-            // 로컬 랭킹 보드 표시
-           // displayLocalRankingBoard();  // 이 줄을 추가하여 로컬 랭킹을 표시
+            // gameContainer를 아래로 내리기 위한 코드 추가
+            var gameContainer = document.getElementById("gameContainer");
+            gameContainer.style.position = "relative"; // position 속성 설정
+            gameContainer.style.top = "300px"; // 아래로 300px 이동
+        
+            // 랭킹 보드의 위치를 위로 올리기
+            var rankingBoard = document.getElementById("rankingBoard");
+            rankingBoard.style.position = "absolute"; // 위치 설정을 위해 position 속성 추가
+            rankingBoard.style.top = "30%"; // 랭킹 보드를 화면에서 30% 위치로 이동       
+        
+            // 랭킹 보드가 이미 표시되어 있는지 확인
+            if (rankingBoard.style.display !== "block") {
+                // 랭킹 보드를 표시하는 함수 호출
+                displayLocalRankingBoard();
+            }
+            
+            rankingBoard.style.display = "block"; // 랭킹 보드를 항상 표시
             
             checkStartCondition();
         }
+
+
+
 
         function selectCharacter(src) {
             ballImage.src = src;
@@ -613,6 +653,7 @@
             document.getElementById("startMessage").style.display = "none";
             document.getElementById('prepare').style.display = 'none';
             document.getElementById("characterSelection").style.display = "none";
+            document.getElementById("rankmore").style.display = "none";
             gameStarted = false; // Ensure gameStarted is reset
             elapsedTime = 0;
             totalItems = Math.floor(Math.random() * 5) + 1; // 총 아이템 수 1~5 사이로 설정
@@ -868,6 +909,7 @@
             document.getElementById("startButton").style.display = "none";
             document.getElementById('characterSelection').style.display = 'none';
             document.getElementById('difficultySelection').style.display = 'none';
+            document.getElementById('rankmore').style.display = 'none';
 
             var company = document.getElementById("company").value;
             var employeeId = document.getElementById("employeeId").value;
@@ -901,6 +943,10 @@
                 console.error('Error sending participation count:', error);
             });
         }
+
+        
+
+        
 
         function draw() {
             if (!gameStarted) return;
@@ -975,8 +1021,14 @@
         
             // 로딩 스크린 표시
             showLoadingScreen();            
-        
-            fetch('https://script.google.com/macros/s/AKfycbz0HTlFBDuS61nRU149B3F8LJJfJ-OcRG8AtvuzqqnHgZ1effaSL6vj24pflIpbN9xUVg/exec', {
+
+            // 랭킹 보드의 위치를 위로 올리기
+            var rankingBoard = document.getElementById("rankingBoard");
+            rankingBoard.style.position = "absolute"; // 위치 설정을 위해 position 속성 추가
+            rankingBoard.style.top = "30%"; // 랭킹 보드를 화면에서 30% 위치로 이동       
+            document.getElementById("rankmore").style.display = "block";
+                    
+            fetch('https://script.google.com/macros/s/AKfycbys9uIrBKO8vadkKTQ46w9UMoezn6EPZXCB0jjBFEYVxJGdLIXKBWMqXjbOWU3TZ1zrdQ/exec', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "text/plain;charset=utf-8",
@@ -1047,7 +1099,7 @@
             var loadingScreen2 = document.getElementById("loadingScreen2");
             loadingScreen2.style.display = "flex";
             
-            fetch('https://script.google.com/macros/s/AKfycbz0HTlFBDuS61nRU149B3F8LJJfJ-OcRG8AtvuzqqnHgZ1effaSL6vj24pflIpbN9xUVg/exec', {
+            fetch('https://script.google.com/macros/s/AKfycbys9uIrBKO8vadkKTQ46w9UMoezn6EPZXCB0jjBFEYVxJGdLIXKBWMqXjbOWU3TZ1zrdQ/exec', {
                 mode: 'cors'
             })
             .then(response => {
@@ -1106,6 +1158,86 @@
         }
 
 
+        function rankmore() {
+            // 팝업 창 열기
+            var popup = window.open("", "RankPopup", "width=600,height=800");
+        
+            // 팝업 창에 HTML 구조 추가
+            popup.document.write(`
+                <html>
+                <head>
+                    <title>전체 랭킹</title>
+                    <style>
+                        body {
+                            font-family: 'Nanum Gothic', 'Malgun Gothic', sans-serif;
+                            background-color: #f9f9f9;
+                            text-align: center;
+                        }
+                        #rankingBoard {
+                            margin: 20px auto;
+                            padding: 20px;
+                            border-radius: 10px;
+                            background-color: rgba(255, 255, 0, 0.5);
+                            color: black;
+                            font-weight: bold;
+                            line-height: 1.6;
+                            width: 80%;
+                            max-width: 500px;
+                        }
+                        .rank {
+                            margin: 10px 0;
+                        }
+                        h2 {
+                            color: #333;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <h2>🏆전체 랭킹🏆</h2>
+                    <div id="rankingBoard"></div>
+                </body>
+                </html>
+            `);
+        
+            // 로딩 화면을 표시
+            var loadingScreen2 = document.getElementById("loadingScreen2");
+            loadingScreen2.style.display = "flex";
+            
+            fetch('https://script.google.com/macros/s/AKfycbys9uIrBKO8vadkKTQ46w9UMoezn6EPZXCB0jjBFEYVxJGdLIXKBWMqXjbOWU3TZ1zrdQ/exec', {
+                mode: 'cors'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data); // 받아온 데이터를 콘솔에 출력하여 확인합니다.
+        
+                var rankingBoard = popup.document.getElementById("rankingBoard");
+        
+                // 'entire' 데이터를 처리하여 전체 랭킹을 표시합니다.
+                data.entire.forEach((entry, index) => {
+                    var entryElement = popup.document.createElement("div");
+                    entryElement.className = "rank";
+                    entryElement.innerHTML = `<span class="name">${index + 1}등 ${entry.name} (사번: ${entry.employeeId})</span><span class="time">${entry.elapsedTime.toFixed(2)}초</span>`;
+                    rankingBoard.appendChild(entryElement);
+                });
+            })
+            .finally(() => {
+                // 로딩 화면을 숨김
+                loadingScreen2.style.display = "none";
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                // 로딩 화면을 숨김 (오류 발생 시에도)
+                loadingScreen2.style.display = "none";
+            });
+        }
+
+
+        
         
 
     </script>
