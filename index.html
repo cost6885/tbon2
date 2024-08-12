@@ -524,6 +524,9 @@
             itemFalling = false;
             itemCaught = false;
             itemStock = false;
+
+            // 초기 캐릭터 이미지로 설정 (기본 상태로 복구)
+            ballImage.src = defaultCharacter;  // 이 부분을 추가해서 캐릭터를 기본 상태로 되돌립니다.
             
             document.querySelectorAll('.character-option').forEach(el => el.classList.remove('selected'));
             document.querySelectorAll('.difficulty-option').forEach(el => el.classList.remove('selected'));
@@ -849,6 +852,8 @@
             localStorage.setItem("employeeId", employeeId);
             localStorage.setItem("name", name);
 
+            itemCaught = false; // 특수 모드 초기화
+            
             initGame();
             gameStarted = true;
             startTime = Date.now();
