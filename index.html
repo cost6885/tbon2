@@ -345,7 +345,7 @@
     </audio>
 
     <!-- 낙하아이템 추가 -->
-    <img id="fallingItem" src="https://github.com/cost6885/tbon2/raw/main/image/myun.png" style="display: none; position: absolute; width: 80px; height: 70px;" alt="Falling Item">
+    <img id="fallingItem" src="https://github.com/cost6885/tbon2/raw/main/image/soup.png" style="display: none; position: absolute; width: 80px; height: 70px;" alt="Falling Item">
     
 
     <script>
@@ -615,8 +615,8 @@
             } else if (e.key === "Left" || e.key === "ArrowLeft") {
                 leftPressed = true;
             } else if (e.key === " " && successMessageShown) {
-                document.getElementById("startMessage").style.display = "block";
-                prepare();  // initGame() 대신 prepare() 함수를 호출하여 준비 상태로 돌아갑니다.
+                document.getElementById("startMessage").style.display = "none";
+                prapare();  // initGame() 대신 prepare() 함수를 호출하여 준비 상태로 돌아갑니다.
                 successMessageShown = false; // 메시지가 숨겨졌음을 표시
             }
         }
