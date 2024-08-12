@@ -170,7 +170,7 @@
             top: 40%;
             left: 50%;            
             transform: translate(-50%, -50%);
-            padding: 20px 80px; /* 상하 좌우 패딩을 각각 20px과 40px로 설정 */
+            padding: 20px 20px; /* 상하 좌우 패딩을 각각 20px과 40px로 설정 */
             border-radius: 10px;
             display: none;
             background-color: rgba(255, 255, 0, 0.5);
@@ -178,6 +178,8 @@
             font-weight: bold;
             font-family: 'Nanum Gothic', 'Malgun Gothic', sans-serif;
             line-height: 1.6; /* 줄 간격 조절 */
+            width: 80%; /* 화면 크기의 80%로 설정 */
+            max-width: 500px; /* 최대 가로 크기 설정 (예: 1000px) */
         }
         
         .styled-button {
@@ -974,7 +976,7 @@
             // 로딩 스크린 표시
             showLoadingScreen();            
         
-            fetch('https://script.google.com/macros/s/AKfycbwpHX0-rZ9wTxZIJKR8XDvbzp-dQjkiwrc49EvA3ZPTgNM4y3hrHIF6K6s8hKVCyf-J0g/exec', {
+            fetch('https://script.google.com/macros/s/AKfycbz0HTlFBDuS61nRU149B3F8LJJfJ-OcRG8AtvuzqqnHgZ1effaSL6vj24pflIpbN9xUVg/exec', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "text/plain;charset=utf-8",
@@ -1045,7 +1047,7 @@
             var loadingScreen2 = document.getElementById("loadingScreen2");
             loadingScreen2.style.display = "flex";
             
-            fetch('https://script.google.com/macros/s/AKfycbwpHX0-rZ9wTxZIJKR8XDvbzp-dQjkiwrc49EvA3ZPTgNM4y3hrHIF6K6s8hKVCyf-J0g/exec', {
+            fetch('https://script.google.com/macros/s/AKfycbz0HTlFBDuS61nRU149B3F8LJJfJ-OcRG8AtvuzqqnHgZ1effaSL6vj24pflIpbN9xUVg/exec', {
                 mode: 'cors'
             })
             .then(response => {
