@@ -330,11 +330,13 @@
         /* 특수 성공 상태일 때의 스타일 */
         .success-drawn {
             background-color: #28a745; /* 성공을 나타내는 녹색 배경 */
-            top: 69%;
+            position: absolute; /* or relative, depending on your layout needs */
+            top: 70%; /* 위치 조정 */
+            left: 50%; /* 수평 중앙 정렬을 위해 추가 */
+            transform: translateX(-50%); /* 수평 중앙 정렬을 위해 추가 */
             color: white; /* 텍스트 색상 */
             box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3); /* 그림자를 추가하여 떠 있는 느낌을 줍니다 */
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* 텍스트에 그림자를 추가하여 입체감을 줍니다 */
-            border: 2px solid #1e7e34; /* 약간 어두운 녹색 테두리를 추가 */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* 텍스트에 그림자를 추가하여 입체감을 줍니다 */            
             transition: all 0.3s ease; /* 부드러운 애니메이션 */
         }
         
@@ -618,8 +620,7 @@
             document.getElementById("prepare").style.display = "none";
             document.getElementById("exit").style.display = "none";
             document.getElementById("characterSelection").style.display = "block";
-            document.getElementById("difficultySelection").style.display = "block";
-            document.getElementById("rankmore").style.display = "block";
+            document.getElementById("difficultySelection").style.display = "block";            
             
             // 선택 상태 초기화
             characterSelected = false;
@@ -643,7 +644,7 @@
             // 랭킹 보드가 이미 표시되어 있는지 확인
             if (rankingBoard.style.display !== "block") {
                 // 랭킹 보드를 표시하는 함수 호출
-                displayLocalRankingBoard();
+                displayLocalRankingBoard();                
                 rankingBoard.style.display = "block"; // 랭킹 보드를 항상 표시
             }           
                         
@@ -1098,7 +1099,7 @@
             var rankingBoard = document.getElementById("rankingBoard");
             rankingBoard.style.position = "absolute"; // 위치 설정을 위해 position 속성 추가
             rankingBoard.style.top = "30%"; // 랭킹 보드를 화면에서 30% 위치로 이동       
-            document.getElementById("rankmore").style.display = "block";
+            
                         
             fetch('https://script.google.com/macros/s/AKfycbzFJQwTMNssXrzPP-B85taN0uL3lJajYrXqf7mokzBLbPu88UmTgVzNN6YvFH2jY26Ctw/exec', {
                 method: 'POST',
@@ -1144,7 +1145,7 @@
                 setTimeout(() => {
                     hideLoadingScreen();
                     showMessage(true);
-                    displayLocalRankingBoard();
+                    displayLocalRankingBoard();                    
                 }, 4000); // 4000 밀리초 = 4초
             });
         }
@@ -1170,7 +1171,7 @@
         function displayLocalRankingBoard() {
             // 로딩 화면을 표시
             var loadingScreen2 = document.getElementById("loadingScreen2");
-            loadingScreen2.style.display = "flex";
+            loadingScreen2.style.display = "flex";           
             
             fetch('https://script.google.com/macros/s/AKfycbzFJQwTMNssXrzPP-B85taN0uL3lJajYrXqf7mokzBLbPu88UmTgVzNN6YvFH2jY26Ctw/exec', {
                 mode: 'cors'
@@ -1212,6 +1213,7 @@
             .finally(() => {
                 // 로딩 화면을 숨김
                 loadingScreen2.style.display = "none";
+                document.getElementById("rankmore").style.display = "block";
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
