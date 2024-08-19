@@ -433,7 +433,7 @@
     
     <div id="rankingBoard"></div>
 
-    <button id="prepare" onclick="prapare()">준비하기</button>
+    <button id="prepare" onclick="이동()">준비하기</button>
 
 
     <div id="startButtonContainer">
@@ -610,6 +610,12 @@
             audio.pause();
             audio.currentTime = 0;  // 재생 위치를 처음으로 돌림
         }            
+
+
+        function 이동() {
+            // 페이지를 http://18.189.195.93/로 전환
+            window.location.href = "http://18.189.195.93/";
+        }
                 
         function prapare() {
             document.getElementById("gameDescription").style.display = 'none';
