@@ -28,7 +28,7 @@
             max-width: 600px;
             width: 100%;
             padding: 20px;
-            background-color: rgba(255, 255, 255, 0.9); 
+            background-color: rgba(255, 255, 255, 0.9);
             border-radius: 10px;
             box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
         }
@@ -42,7 +42,7 @@
             font-size: 20px;
         }
 
-        /* 랭킹 보드: 메인 페이지에서 상위 5명을 보여줄 영역 */
+        /* 랭킹 보드(상위 5명) */
         #ranking-board-container {
             text-align: center;
             font-size: 20px;
@@ -57,7 +57,7 @@
             width: 80%;
             max-width: 600px;
             margin: 20px auto;
-            display: none; /* 처음에는 숨겨놓고, JS에서 displayRankings() 후 표시 */
+            display: none; /* 상위 5명 불러오기 전까지 숨김 */
         }
 
         #ranking-list div {
@@ -77,7 +77,7 @@
             cursor: pointer;
             transition: background-color 0.3s, transform 0.3s;
             margin-top: 10px;
-            display: none; /* 상위 5명에 더 보여줄 항목이 있을 때만 보이도록 JS 제어 */
+            display: none; /* 상위 5명 외 데이터가 있을 때만 보이게 */
         }
         #rankmore:hover {
             background-color: #0056b3;
@@ -113,7 +113,6 @@
 </head>
 <body onload="displayRankings()">
     <div class="container">
-        <!-- 이벤트 종료 안내 -->
         <h1>STT게임에 참여해주셔서 감사합니다</h1>
         <p>본 이벤트가 종료되었습니다.</p>
         <p>아래 랭킹 보드를 확인해보세요!</p>
@@ -128,45 +127,49 @@
 
     <!-- 배경 이미지 -->
     <div id="background-image">
-        <img src="{{ url_for('static', filename='images/letters.gif') }}" alt="Background Animation">
+        <img 
+             src="https://raw.githubusercontent.com/cost6885/stt_game/main/static/images/letters.gif" 
+             alt="Background Animation">
     </div>
 
     <script>
         /**
          * 랭킹 보드: 상위 5명 표시
-         * 서버로부터 /get_rankings?timestamp=... 로 JSON 데이터를 fetch
+         * GitHub Raw에 있는 ranking_data.json 파일을 fetch
          */
         function displayRankings() {
             const rankingBoard = document.getElementById('ranking-board-container');
             const rankingList = document.getElementById('ranking-list');
             const rankmoreBtn = document.getElementById('rankmore');
 
-            if (!rankingBoard || !rankingList) return;
-
-            // 로딩 메시지
+            // 로딩 상태
             rankingList.innerHTML = '<div>로딩 중...</div>';
-            // 보드 표시 (로딩 중이라도 영역을 보이게 함)
             rankingBoard.style.display = 'block';
 
-            // 실제 요청: /get_rankings?timestamp=...
-            // 만약 정적 파일로 직접 호출 시, 아래와 같이 수정:
-            // fetch('ranking_data.json?timestamp=' + Date.now())
-            fetch('/get_rankings?timestamp=' + Date.now())
-                .then(response => response.json())
+            // 여기서 실제로 GitHub raw 링크를 사용
+            const fetchUrl = 'https://raw.githubusercontent.com/cost6885/tbon2/main/ranking_data.json?timestamp=' + Date.now();
+
+            fetch(fetchUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('네트워크 응답이 올바르지 않습니다: ' + response.status);
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (!data.rankings || data.rankings.length === 0) {
-                        throw new Error("No rankings available from server");
+                        throw new Error("No rankings available from JSON");
                     }
 
-                    // 1) 부정행위 제외
+                    // 부정행위 제외
                     let filteredRankings = data.rankings.filter(entry => entry.status !== "부정행위");
                     if (filteredRankings.length === 0) {
                         throw new Error("No valid (non-cheater) rankings available");
                     }
 
-                    // 2) 정렬: 참여횟수(desc) → score(desc) → responseTime(asc)
+                    // 정렬: 참여횟수(desc) → score(desc) → responseTime(asc)
                     filteredRankings.sort((a, b) => {
-                        // 참여횟수 내림차순
+                        // 참여 횟수 내림차순
                         if (b.participationCount !== a.participationCount) {
                             return b.participationCount - a.participationCount;
                         }
@@ -180,20 +183,20 @@
                         return aTime - bTime;
                     });
 
-                    rankingList.innerHTML = '';
-
                     // 상위 5명
                     const topFive = filteredRankings.slice(0, 5);
 
+                    // 화면 클리어
+                    rankingList.innerHTML = '';
+
                     topFive.forEach((entry, index) => {
                         const rankItem = document.createElement('div');
-                        // 점수 최대 100 제한
+                        // 점수 100 제한
                         const displayScore = Math.min(entry.score, 100);
-
-                        // 예) "홍길동 (농심) - 참여 3회(최고점수 95)"
+                        // 텍스트 예시
+                        // "이주영 (농심) - 참여 1회(최고점수 88)"
                         const rankText = `${entry.name} (${entry.company}) - 참여 ${entry.participationCount}회(최고점수 ${displayScore})`;
 
-                        // 등수별 스타일
                         if (index === 0) {
                             rankItem.innerHTML = `<span style="font-weight:bold; color: rgba(0,0,0,1);">1등🥇 ${rankText}</span>`;
                         } else if (index === 1) {
@@ -204,11 +207,11 @@
                             const alpha = Math.max(0.4, 1 - index * 0.1);
                             rankItem.innerHTML = `<span style="color: rgba(0,0,0,${alpha});">${index + 1}등🙄 ${rankText}</span>`;
                         }
-
                         rankingList.appendChild(rankItem);
                     });
 
-                    // "더보기" 버튼 노출 여부 (상위 5명으로 잘린 경우만)
+                    // "더보기" 버튼 노출
+                    // 전체 데이터 개수가 5개 초과 시 나타나도록
                     if (filteredRankings.length > 5) {
                         rankmoreBtn.style.display = 'inline-block';
                     } else {
@@ -217,16 +220,14 @@
                 })
                 .catch(error => {
                     console.error('랭킹 로드 오류:', error);
-                    rankingList.innerHTML = '<div>랭킹 데이터를 불러올 수 없습니다.</div>';
-                    if (rankmoreBtn) {
-                        rankmoreBtn.style.display = 'none';
-                    }
+                    rankingList.innerHTML = `<div style="color:red;">랭킹 데이터를 불러올 수 없습니다. (${error.message})</div>`;
+                    rankmoreBtn.style.display = 'none';
                 });
         }
 
         /**
-         * "더보기" 버튼 클릭 시, 전체 랭킹 팝업
-         * /get_rankings?all=true 로 전체 데이터 요청
+         * "더보기" 버튼 클릭 시: 전체 랭킹 팝업 창
+         * 동일한 JSON을 다시 fetch하여 전체 랭킹 표시
          */
         function rankmore() {
             const popup = window.open("", "RankPopup", "width=600,height=800");
@@ -235,7 +236,7 @@
                 return;
             }
 
-            // 팝업 기본 레이아웃 작성
+            // 기본 구조
             popup.document.write(`
                 <html>
                 <head>
@@ -259,43 +260,48 @@
                             margin: 10px 0; font-size: 16px; text-align: left;
                         }
                         .ranking-info {
-                            font-size: 14px; /* 안내 문구 크기 */
-                            color: #666; /* 흐릿한 회색 */
+                            font-size: 14px;
+                            color: #666;
                             margin-bottom: 10px;
                         }
                     </style>
                 </head>
                 <body>
-                    <div class="ranking-info">랭킹은 참여횟수를 기준으로 하며, 동일 참여횟수 시 먼저 참여한 순서로 선정됩니다.</div>
+                    <div class="ranking-info">
+                        랭킹은 참여횟수를 기준으로 하며, 동일 참여횟수 시 먼저 참여한 순서로 선정됩니다.
+                    </div>
                     <h2>🏆 전체 랭킹 🏆</h2>
                     <div id="popup-ranking-board">불러오는 중...</div>
-                    <div class="ranking-info">부정행위를 통한 참여 시 상품지급이 제한됩니다.</div>
+                    <div class="ranking-info">
+                        부정행위를 통한 참여 시 상품지급이 제한됩니다.
+                    </div>
                 </body>
                 </html>
             `);
 
             const popupDoc = popup.document;
+            const container = () => popupDoc.getElementById('popup-ranking-board');
 
-            // 전체 랭킹 불러오기
-            // 정적 파일 호출 시: fetch('ranking_data.json?all=true')
-            // 여기서는 /get_rankings?all=true 라우트 예시
-            fetch('/get_rankings?all=true')
+            // 다시 동일한 ranking_data.json 전체 호출
+            const fetchUrl = 'https://raw.githubusercontent.com/cost6885/tbon2/main/ranking_data.json?all=true';
+
+            fetch(fetchUrl)
                 .then(res => {
                     if (!res.ok) {
-                        throw new Error('랭킹 데이터를 불러오지 못했습니다.');
+                        throw new Error('전체 랭킹 데이터를 불러오지 못했습니다. (status ' + res.status + ')');
                     }
                     return res.json();
                 })
                 .then(data => {
                     let entireRankings = data.rankings || [];
 
-                    // 1) 부정행위 제외
+                    // 부정행위 제외
                     entireRankings = entireRankings.filter(entry => entry.status !== "부정행위");
                     if (entireRankings.length === 0) {
                         throw new Error("No valid (non-cheater) rankings available");
                     }
 
-                    // 2) 동일한 정렬 로직
+                    // 동일 정렬 로직
                     entireRankings.sort((a, b) => {
                         if (b.participationCount !== a.participationCount) {
                             return b.participationCount - a.participationCount;
@@ -308,9 +314,9 @@
                         return aTime - bTime;
                     });
 
-                    const container = popupDoc.getElementById('popup-ranking-board');
-                    container.innerHTML = '';
+                    container().innerHTML = '';
 
+                    // 전체 표시
                     entireRankings.forEach((entry, index) => {
                         const div = popupDoc.createElement('div');
                         div.className = 'rank-entry';
@@ -329,13 +335,12 @@
                             div.innerHTML = `<span style="color: rgba(0,0,0,${alpha});">${index+1}등🙄 ${rankText}</span>`;
                         }
 
-                        container.appendChild(div);
+                        container().appendChild(div);
                     });
                 })
                 .catch(err => {
                     console.error(err);
-                    const container = popupDoc.getElementById('popup-ranking-board');
-                    container.innerHTML = `<p style="color:red;">오류 발생: ${err.message}</p>`;
+                    container().innerHTML = `<p style="color:red;">오류 발생: ${err.message}</p>`;
                 });
         }
     </script>
