@@ -12,16 +12,16 @@
             box-sizing: border-box;
         }
 
-        /* 웹폰트 및 레이아웃 설정 */
+        /* 바디에서 flex 제거 */
         body {
             font-family: 'Nanum Gothic','Arial', sans-serif;
             background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             text-align: center;
             line-height: 1.5;
+            /* display: flex;             // 제거
+            justify-content: center;    // 제거
+            align-items: center;        // 제거
+            height: 100vh;             // 제거 */
         }
 
         .container {
@@ -31,6 +31,7 @@
             background-color: rgba(255, 255, 255, 0.9);
             border-radius: 10px;
             box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            margin: 40px auto; /* 화면 가운데 정렬을 위해 auto로 */
         }
 
         h1 {
@@ -128,7 +129,7 @@
     <!-- 배경 이미지 -->
     <div id="background-image">
         <img 
-             src="https://raw.githubusercontent.com/cost6885/tbon2/main/images/letters.gif" 
+             src="https://raw.githubusercontent.com/cost6885/tbon2/main/image/letters.gif" 
              alt="Background Animation">
     </div>
 
