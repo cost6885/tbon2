@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8">
     <title>STT게임 이벤트 종료</title>
     <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@700&display=swap" rel="stylesheet">
-
     <style>
         /* 기본 스타일 초기화 */
         * {
@@ -44,7 +42,7 @@
             font-size: 20px;
         }
 
-        /* 랭킹 보드 */
+        /* 랭킹 보드: 메인 페이지에서 상위 5명을 보여줄 영역 */
         #ranking-board-container {
             text-align: center;
             font-size: 20px;
@@ -59,13 +57,13 @@
             width: 80%;
             max-width: 600px;
             margin: 20px auto;
+            display: none; /* 처음에는 숨겨놓고, JS에서 displayRankings() 후 표시 */
         }
 
         #ranking-list div {
             margin: 10px 0;
             padding: 5px;
             font-size: 17px;
-            font-family: 'Nanum Gothic', sans-serif;
             text-align: left;
         }
 
@@ -79,34 +77,30 @@
             cursor: pointer;
             transition: background-color 0.3s, transform 0.3s;
             margin-top: 10px;
+            display: none; /* 상위 5명에 더 보여줄 항목이 있을 때만 보이도록 JS 제어 */
         }
-
         #rankmore:hover {
             background-color: #0056b3;
             transform: translateY(-2px);
         }
 
-        /* 배경 이미지 */
+        /* 배경 이미지(letters.gif) */
         #background-image {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             z-index: -1;
             overflow: hidden;
         }
         #background-image img {
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             opacity: 0.2;
             width: 150%;
             height: auto;
             animation: rotate 60s linear infinite;
         }
-
         @keyframes rotate {
             0% {
                 transform: translate(-50%, -50%) rotate(0deg);
@@ -117,18 +111,19 @@
         }
     </style>
 </head>
-<body>
+<body onload="displayRankings()">
     <div class="container">
+        <!-- 이벤트 종료 안내 -->
         <h1>STT게임에 참여해주셔서 감사합니다</h1>
         <p>본 이벤트가 종료되었습니다.</p>
         <p>아래 랭킹 보드를 확인해보세요!</p>
     </div>
 
-    <!-- 랭킹 보드 -->
+    <!-- 상위 5명 랭킹 보드 -->
     <div id="ranking-board-container">
-        <h3>📋 랭킹 보드 📋</h3>
+        <h3>📋 랭킹 보드 (상위 5명) 📋</h3>
         <div id="ranking-list"></div>
-        <button id="rankmore">더보기⋯</button>
+        <button id="rankmore" onclick="rankmore()">더보기⋯</button>
     </div>
 
     <!-- 배경 이미지 -->
@@ -137,51 +132,212 @@
     </div>
 
     <script>
-        // JSON 데이터 (rankin_data.json 파일의 내용을 가져왔다고 가정)
-        const rankingData = {
-            "rankings": [
-                { "rank": 0, "company": "농심", "employeeId": "2002534", "name": "이주영", "score": 88 },
-                { "rank": 0, "company": "농심", "employeeId": "2024079", "name": "임지수", "score": 99 },
-                { "rank": 0, "company": "농심홀딩스", "employeeId": "2003010", "name": "장승엽", "score": 95 },
-                // ... 생략 (나머지 데이터 추가) ...
-                { "rank": 0, "company": "농심", "employeeId": "2017628", "name": "손준기", "score": 98 }
-            ]
-        };
+        /**
+         * 랭킹 보드: 상위 5명 표시
+         * 서버로부터 /get_rankings?timestamp=... 로 JSON 데이터를 fetch
+         */
+        function displayRankings() {
+            const rankingBoard = document.getElementById('ranking-board-container');
+            const rankingList = document.getElementById('ranking-list');
+            const rankmoreBtn = document.getElementById('rankmore');
 
-        // HTML 요소 선택
-        const rankingList = document.getElementById('ranking-list');
-        const rankMoreBtn = document.getElementById('rankmore');
+            if (!rankingBoard || !rankingList) return;
 
-        // 초기 상태
-        let itemsPerPage = 5; // 한 번에 보여줄 랭킹 수
-        let currentPage = 1;
+            // 로딩 메시지
+            rankingList.innerHTML = '<div>로딩 중...</div>';
+            // 보드 표시 (로딩 중이라도 영역을 보이게 함)
+            rankingBoard.style.display = 'block';
 
-        // 랭킹 데이터를 동적으로 렌더링하는 함수
-        function renderRankings() {
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            const endIndex = currentPage * itemsPerPage;
-            const currentRankings = rankingData.rankings.slice(startIndex, endIndex);
+            // 실제 요청: /get_rankings?timestamp=...
+            // 만약 정적 파일로 직접 호출 시, 아래와 같이 수정:
+            // fetch('ranking_data.json?timestamp=' + Date.now())
+            fetch('/get_rankings?timestamp=' + Date.now())
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.rankings || data.rankings.length === 0) {
+                        throw new Error("No rankings available from server");
+                    }
 
-            currentRankings.forEach((item, index) => {
-                const rankElement = document.createElement('div');
-                rankElement.textContent = `${startIndex + index + 1}위: ${item.name} (${item.company}) - ${item.score}점`;
-                rankingList.appendChild(rankElement);
-            });
+                    // 1) 부정행위 제외
+                    let filteredRankings = data.rankings.filter(entry => entry.status !== "부정행위");
+                    if (filteredRankings.length === 0) {
+                        throw new Error("No valid (non-cheater) rankings available");
+                    }
 
-            // "더보기" 버튼 숨김 처리
-            if (endIndex >= rankingData.rankings.length) {
-                rankMoreBtn.style.display = 'none';
-            }
+                    // 2) 정렬: 참여횟수(desc) → score(desc) → responseTime(asc)
+                    filteredRankings.sort((a, b) => {
+                        // 참여횟수 내림차순
+                        if (b.participationCount !== a.participationCount) {
+                            return b.participationCount - a.participationCount;
+                        }
+                        // 점수 내림차순
+                        if (b.score !== a.score) {
+                            return b.score - a.score;
+                        }
+                        // 응답 시각 오름차순
+                        const aTime = new Date(a.responseTime).getTime();
+                        const bTime = new Date(b.responseTime).getTime();
+                        return aTime - bTime;
+                    });
+
+                    rankingList.innerHTML = '';
+
+                    // 상위 5명
+                    const topFive = filteredRankings.slice(0, 5);
+
+                    topFive.forEach((entry, index) => {
+                        const rankItem = document.createElement('div');
+                        // 점수 최대 100 제한
+                        const displayScore = Math.min(entry.score, 100);
+
+                        // 예) "홍길동 (농심) - 참여 3회(최고점수 95)"
+                        const rankText = `${entry.name} (${entry.company}) - 참여 ${entry.participationCount}회(최고점수 ${displayScore})`;
+
+                        // 등수별 스타일
+                        if (index === 0) {
+                            rankItem.innerHTML = `<span style="font-weight:bold; color: rgba(0,0,0,1);">1등🥇 ${rankText}</span>`;
+                        } else if (index === 1) {
+                            rankItem.innerHTML = `<span style="font-weight:bold; color: rgba(0,0,0,0.8);">2등🥈 ${rankText}</span>`;
+                        } else if (index === 2) {
+                            rankItem.innerHTML = `<span style="font-weight:bold; color: rgba(0,0,0,0.6);">3등🥉 ${rankText}</span>`;
+                        } else {
+                            const alpha = Math.max(0.4, 1 - index * 0.1);
+                            rankItem.innerHTML = `<span style="color: rgba(0,0,0,${alpha});">${index + 1}등🙄 ${rankText}</span>`;
+                        }
+
+                        rankingList.appendChild(rankItem);
+                    });
+
+                    // "더보기" 버튼 노출 여부 (상위 5명으로 잘린 경우만)
+                    if (filteredRankings.length > 5) {
+                        rankmoreBtn.style.display = 'inline-block';
+                    } else {
+                        rankmoreBtn.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('랭킹 로드 오류:', error);
+                    rankingList.innerHTML = '<div>랭킹 데이터를 불러올 수 없습니다.</div>';
+                    if (rankmoreBtn) {
+                        rankmoreBtn.style.display = 'none';
+                    }
+                });
         }
 
-        // 초기 렌더링
-        renderRankings();
+        /**
+         * "더보기" 버튼 클릭 시, 전체 랭킹 팝업
+         * /get_rankings?all=true 로 전체 데이터 요청
+         */
+        function rankmore() {
+            const popup = window.open("", "RankPopup", "width=600,height=800");
+            if (!popup) {
+                alert("팝업이 차단되었습니다. 해제 후 다시 시도!");
+                return;
+            }
 
-        // "더보기" 버튼 클릭 이벤트
-        rankMoreBtn.addEventListener('click', () => {
-            currentPage++;
-            renderRankings();
-        });
+            // 팝업 기본 레이아웃 작성
+            popup.document.write(`
+                <html>
+                <head>
+                    <title>전체 랭킹</title>
+                    <style>
+                        body {
+                            font-family: 'Nanum Gothic', sans-serif;
+                            background-color: #f9f9f9;
+                            text-align: center;
+                            margin: 0; padding: 20px;
+                        }
+                        #popup-ranking-board {
+                            margin: 0 auto; padding: 20px;
+                            border-radius: 10px;
+                            background-color: rgba(255, 255, 0, 0.5);
+                            color: black; font-weight: bold;
+                            line-height: 1.6; width: 80%;
+                            max-width: 500px;
+                        }
+                        .rank-entry {
+                            margin: 10px 0; font-size: 16px; text-align: left;
+                        }
+                        .ranking-info {
+                            font-size: 14px; /* 안내 문구 크기 */
+                            color: #666; /* 흐릿한 회색 */
+                            margin-bottom: 10px;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="ranking-info">랭킹은 참여횟수를 기준으로 하며, 동일 참여횟수 시 먼저 참여한 순서로 선정됩니다.</div>
+                    <h2>🏆 전체 랭킹 🏆</h2>
+                    <div id="popup-ranking-board">불러오는 중...</div>
+                    <div class="ranking-info">부정행위를 통한 참여 시 상품지급이 제한됩니다.</div>
+                </body>
+                </html>
+            `);
+
+            const popupDoc = popup.document;
+
+            // 전체 랭킹 불러오기
+            // 정적 파일 호출 시: fetch('ranking_data.json?all=true')
+            // 여기서는 /get_rankings?all=true 라우트 예시
+            fetch('/get_rankings?all=true')
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error('랭킹 데이터를 불러오지 못했습니다.');
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    let entireRankings = data.rankings || [];
+
+                    // 1) 부정행위 제외
+                    entireRankings = entireRankings.filter(entry => entry.status !== "부정행위");
+                    if (entireRankings.length === 0) {
+                        throw new Error("No valid (non-cheater) rankings available");
+                    }
+
+                    // 2) 동일한 정렬 로직
+                    entireRankings.sort((a, b) => {
+                        if (b.participationCount !== a.participationCount) {
+                            return b.participationCount - a.participationCount;
+                        }
+                        if (b.score !== a.score) {
+                            return b.score - a.score;
+                        }
+                        const aTime = new Date(a.responseTime).getTime();
+                        const bTime = new Date(b.responseTime).getTime();
+                        return aTime - bTime;
+                    });
+
+                    const container = popupDoc.getElementById('popup-ranking-board');
+                    container.innerHTML = '';
+
+                    entireRankings.forEach((entry, index) => {
+                        const div = popupDoc.createElement('div');
+                        div.className = 'rank-entry';
+
+                        const displayScore = Math.min(entry.score, 100);
+                        const rankText = `${entry.name} (${entry.company}) - 점수: ${displayScore}, 참여: ${entry.participationCount}회`;
+
+                        if (index === 0) {
+                            div.innerHTML = `<span style="font-weight:bold; color: rgba(0,0,0,1);">1등🥇 ${rankText}</span>`;
+                        } else if (index === 1) {
+                            div.innerHTML = `<span style="font-weight:bold; color: rgba(0,0,0,0.8);">2등🥈 ${rankText}</span>`;
+                        } else if (index === 2) {
+                            div.innerHTML = `<span style="font-weight:bold; color: rgba(0,0,0,0.6);">3등🥉 ${rankText}</span>`;
+                        } else {
+                            const alpha = Math.max(0.4, 1 - index * 0.1);
+                            div.innerHTML = `<span style="color: rgba(0,0,0,${alpha});">${index+1}등🙄 ${rankText}</span>`;
+                        }
+
+                        container.appendChild(div);
+                    });
+                })
+                .catch(err => {
+                    console.error(err);
+                    const container = popupDoc.getElementById('popup-ranking-board');
+                    container.innerHTML = `<p style="color:red;">오류 발생: ${err.message}</p>`;
+                });
+        }
     </script>
 </body>
 </html>
