@@ -1,14 +1,187 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta http-equiv="refresh" content="0;url=https://nsdigitalt.click/">
-<title>Redirecting...</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>STT게임 이벤트 종료</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+        /* 기본 스타일 초기화 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 웹폰트 및 레이아웃 설정 */
+        body {
+            font-family: 'Nanum Gothic','Arial', sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9); 
+            border-radius: 10px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 40px;
+            margin-bottom: 20px;
+        }
+        p {
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        /* 랭킹 보드 */
+        #ranking-board-container {
+            text-align: center;
+            font-size: 20px;
+            position: relative;
+            padding: 20px 20px;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 0, 0.5);
+            color: black;
+            font-weight: bold;
+            font-family: 'Nanum Gothic', 'Malgun Gothic', sans-serif;
+            line-height: 1.6;
+            width: 80%;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+
+        #ranking-list div {
+            margin: 10px 0;
+            padding: 5px;
+            font-size: 17px;
+            font-family: 'Nanum Gothic', sans-serif;
+            text-align: left;
+        }
+
+        /* "더보기" 버튼 */
+        #rankmore {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            margin-top: 10px;
+        }
+
+        #rankmore:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        /* 배경 이미지 */
+        #background-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        #background-image img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.2;
+            width: 150%;
+            height: auto;
+            animation: rotate 60s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+    </style>
 </head>
 <body>
-<script type="text/javascript">
-    window.location.href = "https://nsdigitalt.click/";
-</script>
-<p>If you are not redirected automatically, follow this <a href="https://nsdigitalt.click/">link to continue</a>.</p>
+    <div class="container">
+        <h1>STT게임에 참여해주셔서 감사합니다</h1>
+        <p>본 이벤트가 종료되었습니다.</p>
+        <p>아래 랭킹 보드를 확인해보세요!</p>
+    </div>
+
+    <!-- 랭킹 보드 -->
+    <div id="ranking-board-container">
+        <h3>📋 랭킹 보드 📋</h3>
+        <div id="ranking-list"></div>
+        <button id="rankmore">더보기⋯</button>
+    </div>
+
+    <!-- 배경 이미지 -->
+    <div id="background-image">
+        <img src="{{ url_for('static', filename='images/letters.gif') }}" alt="Background Animation">
+    </div>
+
+    <script>
+        // JSON 데이터 (rankin_data.json 파일의 내용을 가져왔다고 가정)
+        const rankingData = {
+            "rankings": [
+                { "rank": 0, "company": "농심", "employeeId": "2002534", "name": "이주영", "score": 88 },
+                { "rank": 0, "company": "농심", "employeeId": "2024079", "name": "임지수", "score": 99 },
+                { "rank": 0, "company": "농심홀딩스", "employeeId": "2003010", "name": "장승엽", "score": 95 },
+                // ... 생략 (나머지 데이터 추가) ...
+                { "rank": 0, "company": "농심", "employeeId": "2017628", "name": "손준기", "score": 98 }
+            ]
+        };
+
+        // HTML 요소 선택
+        const rankingList = document.getElementById('ranking-list');
+        const rankMoreBtn = document.getElementById('rankmore');
+
+        // 초기 상태
+        let itemsPerPage = 5; // 한 번에 보여줄 랭킹 수
+        let currentPage = 1;
+
+        // 랭킹 데이터를 동적으로 렌더링하는 함수
+        function renderRankings() {
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = currentPage * itemsPerPage;
+            const currentRankings = rankingData.rankings.slice(startIndex, endIndex);
+
+            currentRankings.forEach((item, index) => {
+                const rankElement = document.createElement('div');
+                rankElement.textContent = `${startIndex + index + 1}위: ${item.name} (${item.company}) - ${item.score}점`;
+                rankingList.appendChild(rankElement);
+            });
+
+            // "더보기" 버튼 숨김 처리
+            if (endIndex >= rankingData.rankings.length) {
+                rankMoreBtn.style.display = 'none';
+            }
+        }
+
+        // 초기 렌더링
+        renderRankings();
+
+        // "더보기" 버튼 클릭 이벤트
+        rankMoreBtn.addEventListener('click', () => {
+            currentPage++;
+            renderRankings();
+        });
+    </script>
 </body>
 </html>
