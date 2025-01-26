@@ -128,7 +128,7 @@
     <!-- 배경 이미지 -->
     <div id="background-image">
         <img 
-             src="https://raw.githubusercontent.com/cost6885/stt_game/main/static/images/letters.gif" 
+             src="https://raw.githubusercontent.com/cost6885/tbon2/main/images/letters.gif" 
              alt="Background Animation">
     </div>
 
@@ -146,7 +146,7 @@
             rankingList.innerHTML = '<div>로딩 중...</div>';
             rankingBoard.style.display = 'block';
 
-            // 여기서 실제로 GitHub raw 링크를 사용
+            // GitHub raw 링크 (timestamp 파라미터 추가)
             const fetchUrl = 'https://raw.githubusercontent.com/cost6885/tbon2/main/ranking_data.json?timestamp=' + Date.now();
 
             fetch(fetchUrl)
@@ -193,8 +193,7 @@
                         const rankItem = document.createElement('div');
                         // 점수 100 제한
                         const displayScore = Math.min(entry.score, 100);
-                        // 텍스트 예시
-                        // "이주영 (농심) - 참여 1회(최고점수 88)"
+                        // 예: "이주영 (농심) - 참여 1회(최고점수 88)"
                         const rankText = `${entry.name} (${entry.company}) - 참여 ${entry.participationCount}회(최고점수 ${displayScore})`;
 
                         if (index === 0) {
@@ -210,8 +209,7 @@
                         rankingList.appendChild(rankItem);
                     });
 
-                    // "더보기" 버튼 노출
-                    // 전체 데이터 개수가 5개 초과 시 나타나도록
+                    // "더보기" 버튼 노출(전체 랭킹 5명 초과 시)
                     if (filteredRankings.length > 5) {
                         rankmoreBtn.style.display = 'inline-block';
                     } else {
